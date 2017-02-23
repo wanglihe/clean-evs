@@ -11,6 +11,13 @@ SRC_DIRS  = $(sort -u $(SRC_ENC) $(SRC_DEC))
 CLI_ENC   = EVS_cod
 CLI_DEC   = EVS_dec
 
+# Name of check file
+LTRACE_ENC_OUTPUT = ltrace.enc.out
+LTRACE_DEC_OUTPUT = ltrace.dec.out
+CHECK_INPUT = input.pcm
+CHECK_ENCODED = encoded.evs
+CHECK_DECODED = decoded.pcm
+
 # Default tool settings
 CC        = gcc
 RM        = rm -f
@@ -74,7 +81,7 @@ DEPS      = $(addprefix $(BUILD)/,$(SRCS_ENC:.c=.P) $(SRCS_DEC:.c=.P))
 
 ###############################################################################
 
-.PHONY: all clean clean_all
+.PHONY: all clean clean_all check_alloc
 
 all: $(CLI_ENC) $(CLI_DEC)
 
@@ -87,13 +94,17 @@ $(CLI_ENC): $(OBJS_ENC)
 $(CLI_DEC): $(OBJS_DEC)
 	$(QUIET_LINK)$(CC) $(LDFLAGS) $(OBJS_DEC) -lm -o $(CLI_DEC)
 
+check_alloc: $(CLI_ENC) $(CLI_DEC)
+	ltrace -o $(LTRACE_ENC_OUTPUT) ./$(CLI_ENC) -mime 7200 8 $(CHECK_INPUT) $(CHECK_ENCODED)
+	ltrace -o $(LTRACE_DEC_OUTPUT) ./$(CLI_DEC) -mime 8 $(CHECK_ENCODED) $(CHECK_DECODED)
+
 clean:
 	$(QUIET)$(RM) $(OBJS_ENC) $(OBJS_DEC) $(DEPS)
 	$(QUIET)$(RM) $(DEPS:.P=.d)
 	$(QUIET)test ! -d $(BUILD) || rm -rf $(BUILD)
 
 clean_all: clean
-	$(QUIET)$(RM) $(CLI_ENC) $(CLI_DEC)
+	$(QUIET)$(RM) $(CLI_ENC) $(CLI_DEC) $(CHECK_ENCODED) $(CHECK_DECODED) $(LTRACE_ENC_OUTPUT) $(LTRACE_DEC_OUTPUT)
 
 $(BUILD)/%.o : %.c | $(BUILD)
 	$(QUIET_CC)$(CC) $(CFLAGS) -c -MD -o $@ $<
