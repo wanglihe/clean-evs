@@ -36,51 +36,16 @@
 #ifndef TYPEDEF_H
 #define TYPEDEF_H
 
-/*
- * This is the original code from the file typedef.h
- */
-#if defined(__BORLANDC__) || defined(__WATCOMC__) || defined(_MSC_VER) || defined(__ZTC__)
-typedef signed char Word8;
-typedef unsigned char UWord8;
-typedef short Word16;
-typedef int Word32;
-typedef unsigned short UWord16;
-typedef unsigned int UWord32;
-typedef __int64 Word40;
-typedef int Flag;
+#include <stdint.h>
 
-#elif defined(__CYGWIN__)
-typedef signed char Word8;
-typedef unsigned char UWord8;
-typedef short Word16;
-typedef int Word32;
-typedef unsigned short UWord16;
-typedef unsigned int UWord32;
-typedef long long Word40;
-typedef int Flag;
-
-#elif defined(__sun)
-typedef signed char Word8;
-typedef unsigned char UWord8;
-typedef short Word16;
-typedef long Word32;
-/*#error "The 40-bit operations have not been tested on __sun : need to define Word40"*/
-typedef unsigned short UWord16;
-typedef unsigned long UWord32;
-typedef long long Word40;
-typedef int Flag;
-
-#elif defined(__unix__) || defined(__unix) || defined(__APPLE__)
-typedef signed char Word8;
-typedef unsigned char UWord8;
-typedef short Word16;
-typedef int Word32;
-typedef unsigned short UWord16;
-typedef unsigned int UWord32;
-/*#error "The 40-bit operations have not been tested on unix : need to define Word40"*/
-typedef long long Word40;
-typedef int Flag;
-#endif
+typedef int8_t Word8;
+typedef uint8_t UWord8;
+typedef int16_t Word16;
+typedef int32_t Word32;
+typedef uint16_t UWord16;
+typedef uint32_t UWord32;
+typedef int64_t Word40;
+typedef int32_t Flag;
 
 typedef float Float32;
 
@@ -88,7 +53,3 @@ typedef float Float32;
 
 
 /* end of file */
-
-
-
-
