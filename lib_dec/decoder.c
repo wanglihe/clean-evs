@@ -212,7 +212,6 @@ int main( int argc, char *argv[] )
         /* add zeros at the end to have equal length of synthesized signals */
         set_s( data, 0, zero_pad );
         fwrite( data, sizeof(short), zero_pad, f_synth );
-        destroy_decoder( st );
     }
 
 

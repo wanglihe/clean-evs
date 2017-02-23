@@ -707,23 +707,3 @@ void init_encoder(
 
     return;
 }
-
-
-
-/*-----------------------------------------------------------------------*
- * destroy_encoder()
- *
- * Free memory which was allocated in init_encoder()
- *-----------------------------------------------------------------------*/
-
-void destroy_encoder(
-    Encoder_State *st        /* i/o: Encoder static variables structure   */
-)
-{
-    deleteCldfb( &st->cldfbSynTd );
-    deleteCldfb( &st->cldfbAnaEnc );
-
-    /* Close Core */
-
-    return;
-}

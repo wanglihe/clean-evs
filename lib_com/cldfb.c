@@ -438,12 +438,6 @@ int openCldfb(
         buf_len = (hs->p_filter_length + hs->no_channels*hs->no_col);
     }
 
-    hs->cldfb_state = (float *) calloc( buf_len, sizeof (float));
-    if (hs->cldfb_state == NULL)
-    {
-        return (1);
-    }
-
     set_f(hs->cldfb_state, 0.0f, buf_len);
 
     return (0);
@@ -582,25 +576,6 @@ static float GetEnergyCldfb(
     }
 
     return 65535.0f;
-}
-
-
-/*-------------------------------------------------------------------*
-* GetEnergyCldfb()
-*
-* Remove handle
-*--------------------------------------------------------------------*/
-void deleteCldfb(
-    CLDFB_FILTER_BANK * h_cldfb
-)
-{
-
-    if (h_cldfb->cldfb_state)
-    {
-        free(h_cldfb->cldfb_state);
-    }
-
-    return;
 }
 
 

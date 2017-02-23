@@ -629,22 +629,3 @@ void reset_preecho_dec(
 
     return;
 }
-
-
-/*----------------------------------------------------------------------*
- * destroy_decoder()
- *
- * Free memory which was allocated in init_decoder()
- *----------------------------------------------------------------------*/
-
-void destroy_decoder(
-    Decoder_State *st       /* o:   Decoder static variables structure */
-)
-{
-    /* CLDFB BPF & resampling tools */
-    deleteCldfb( &st->cldfbAna );           /* delete analysis for max. SR 16kHz */
-    deleteCldfb( &st->cldfbBPF );           /* delete analysis BPF for max. SR 16kHz */
-    deleteCldfb( &st->cldfbSyn );           /* delete synthesis for output SR */
-
-    return;
-}

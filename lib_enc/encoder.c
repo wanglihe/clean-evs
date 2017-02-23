@@ -208,7 +208,6 @@ int main( int argc, char** argv )
     fclose( f_stream );
     if ( f_rate ) fclose ( f_rate );
     if ( f_bwidth ) fclose ( f_bwidth );
-    destroy_encoder( st );
 
 
     return 0;

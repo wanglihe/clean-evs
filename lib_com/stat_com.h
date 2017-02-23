@@ -542,7 +542,9 @@ typedef struct
     unsigned int memory_length;
 
     /* main filter state */
-    float *cldfb_state;
+    /* Is this length is enough? (CLDFB_NO_COL_MAX+1)*(CLDFB_NO_CHANNELS_MAX+1)
+     * cause dead loop */
+    float cldfb_state[(CLDFB_NO_COL_MAX)*(CLDFB_NO_CHANNELS_MAX)*4];
 
     /* other parameters */
     int bandsToZero;                  /* bands not synthesized */

@@ -97,6 +97,10 @@ $(CLI_DEC): $(OBJS_DEC)
 check_alloc: $(CLI_ENC) $(CLI_DEC)
 	ltrace -o $(LTRACE_ENC_OUTPUT) ./$(CLI_ENC) -mime 7200 8 $(CHECK_INPUT) $(CHECK_ENCODED)
 	ltrace -o $(LTRACE_DEC_OUTPUT) ./$(CLI_DEC) -mime 8 $(CHECK_ENCODED) $(CHECK_DECODED)
+run:
+	./$(CLI_ENC) -mime 7200 8 $(CHECK_INPUT) $(CHECK_ENCODED)
+	./$(CLI_DEC) -mime 8 $(CHECK_ENCODED) $(CHECK_DECODED)
+
 
 clean:
 	$(QUIET)$(RM) $(OBJS_ENC) $(OBJS_DEC) $(DEPS)

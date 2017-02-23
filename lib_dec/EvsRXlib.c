@@ -443,8 +443,6 @@ EVS_RX_Close(EVS_RX_HANDLE* phRX )
         return EVS_RX_NO_ERROR;
     }
 
-    destroy_decoder( (*phRX)->st );
-
     if( (*phRX)->hJBM )
         JB4_Destroy( &(*phRX)->hJBM );
 

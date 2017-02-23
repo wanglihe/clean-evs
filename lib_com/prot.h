@@ -2065,10 +2065,6 @@ void init_encoder(
     Encoder_State *st                         /* i/o: state structure   */
 );
 
-void destroy_encoder(
-    Encoder_State *st                         /* i/o: state structure   */
-);
-
 void evs_enc(
     Encoder_State *st,                        /* i/o: state structure             */
     const short *data,                      /* i  : input signal                */
@@ -5041,10 +5037,6 @@ void io_ini_dec(
 );
 
 void init_decoder(
-    Decoder_State *st                         /* o  : Decoder static variables structure      */
-);
-
-void destroy_decoder(
     Decoder_State *st                         /* o  : Decoder static variables structure      */
 );
 
@@ -8819,10 +8811,6 @@ int cldfb_restore_memory(
 
 int cldfb_reset_memory (
     HANDLE_CLDFB_FILTER_BANK hs   /* i/o : filter bank handle */
-);
-
-void deleteCldfb(
-    CLDFB_FILTER_BANK *h_cldfb   /* i/o : filter bank */
 );
 
 void fft_cldfb (
