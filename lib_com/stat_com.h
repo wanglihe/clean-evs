@@ -538,7 +538,7 @@ typedef struct
     const float *rot_vec_syn_im;
 
     /* memory helper states */
-    float *memory;
+    float memory[(CLDFB_NO_COL_MAX)*(CLDFB_NO_CHANNELS_MAX)*4];
     unsigned int memory_length;
 
     /* main filter state */

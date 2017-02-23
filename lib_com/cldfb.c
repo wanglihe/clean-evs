@@ -425,7 +425,6 @@ int openCldfb(
     hs->type = type;
 
     configureCldfb (hs, samplerate);
-    hs->memory = NULL;
     hs->memory_length = 0;
 
     if (type == CLDFB_ANALYSIS)
@@ -666,7 +665,7 @@ int cldfb_save_memory(
     unsigned int offset = hs->p_filter_length - hs->no_channels;
     unsigned int frameSize = hs->no_channels * hs->no_col;
 
-    if (hs->memory != NULL || hs->memory_length!=0)
+    if (hs->memory_length!=0)
     {
         /* memory already stored; Free memory first */
         return 1;
@@ -680,13 +679,6 @@ int cldfb_save_memory(
     else
     {
         hs->memory_length = hs->p_filter_length;
-    }
-
-    hs->memory = (float *) calloc( hs->memory_length, sizeof (float));
-    if (hs->memory == NULL)
-    {
-        /* memory cannot be allocated */
-        return (1);
     }
 
     /* save the memory */
@@ -709,7 +701,7 @@ int cldfb_restore_memory(
     unsigned int frameSize = hs->no_channels * hs->no_col;
     unsigned int size;
 
-    if (hs->memory == NULL || hs->memory_length==0)
+    if (hs->memory_length==0)
     {
         /* memory not allocated */
         return 1;
@@ -734,8 +726,6 @@ int cldfb_restore_memory(
     }
 
     hs->memory_length = 0;
-    free(hs->memory);
-    hs->memory = NULL;
 
     return 0;
 }
