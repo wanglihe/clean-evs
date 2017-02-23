@@ -605,8 +605,8 @@ void evs_dec(
                 imagBuffer[i] = imagBufferTmp[i];
             }
 
-            st->cldfbSyn->nab = min( st->cldfbAna->no_channels, st->cldfbSyn->no_channels );
-            st->cldfbAna->nab = 0;
+            st->cldfbSyn.nab = min( st->cldfbAna.no_channels, st->cldfbSyn.no_channels );
+            st->cldfbAna.nab = 0;
 
             if( st->hFdCngDec != NULL && (st->sr_core == 8000 || st->sr_core == 12800 || st->sr_core == 16000) && st->total_brate <= ACELP_32k )
             {
@@ -641,7 +641,7 @@ void evs_dec(
 
             if( st->m_frame_type == ACTIVE_FRAME )
             {
-                cldfbAnalysis( output, realBuffer, imagBuffer, -1, st->cldfbAna );
+                cldfbAnalysis( output, realBuffer, imagBuffer, -1, &st->cldfbAna );
             }
             else
             {
@@ -665,23 +665,23 @@ void evs_dec(
                 }
 
                 /* check if the CLDFB works on the right sample rate */
-                if( (st->cldfbAna->no_channels * st->cldfbAna->no_col) != st->L_frame )
+                if( (st->cldfbAna.no_channels * st->cldfbAna.no_col) != st->L_frame )
                 {
-                    resampleCldfb (st->cldfbAna, (st->L_frame * 50));
-                    resampleCldfb (st->cldfbBPF, (st->L_frame * 50));
+                    resampleCldfb (&st->cldfbAna, (st->L_frame * 50));
+                    resampleCldfb (&st->cldfbBPF, (st->L_frame * 50));
 
                 }
 
-                st->cldfbSyn->bandsToZero = 0;
-                if( st->bwidth == NB && st->cldfbSyn->no_channels > 10 )
+                st->cldfbSyn.bandsToZero = 0;
+                if( st->bwidth == NB && st->cldfbSyn.no_channels > 10 )
                 {
-                    st->cldfbSyn->bandsToZero = st->cldfbSyn->no_channels - 10;
+                    st->cldfbSyn.bandsToZero = st->cldfbSyn.no_channels - 10;
                 }
-                else if( st->hFdCngDec->hFdCngCom->regularStopBand < st->cldfbSyn->no_channels )
+                else if( st->hFdCngDec->hFdCngCom->regularStopBand < st->cldfbSyn.no_channels )
                 {
-                    st->cldfbSyn->bandsToZero = st->cldfbSyn->no_channels - st->hFdCngDec->hFdCngCom->regularStopBand;
+                    st->cldfbSyn.bandsToZero = st->cldfbSyn.no_channels - st->hFdCngDec->hFdCngCom->regularStopBand;
                 }
-                cldfbAnalysis( timeDomainBuffer, realBuffer, imagBuffer, -1, st->cldfbAna );
+                cldfbAnalysis( timeDomainBuffer, realBuffer, imagBuffer, -1, &st->cldfbAna );
             }
 
             if( st->flag_cna == 0 )
@@ -691,13 +691,13 @@ void evs_dec(
 
             if( st->p_bpf_noise_buf )
             {
-                addBassPostFilter( st->p_bpf_noise_buf, -1, realBuffer, imagBuffer, st->cldfbBPF );
+                addBassPostFilter( st->p_bpf_noise_buf, -1, realBuffer, imagBuffer, &st->cldfbBPF );
             }
 
             if (st->output_Fs > 8000)
             {
                 calcGainTemp_TBE( realBuffer, imagBuffer, st->tecDec.loBuffer, 0,
-                                  st->cldfbAna->no_col, st->cldfbAna->no_channels, st->tecDec.pGainTemp, st->tec_flag );
+                                  st->cldfbAna.no_col, st->cldfbAna.no_channels, st->tecDec.pGainTemp, st->tec_flag );
             }
 
             /* set high band buffers to zero. Covering the current frame and the overlap area. */
@@ -705,12 +705,12 @@ void evs_dec(
             {
                 for( i = 0; i < CLDFB_NO_COL_MAX; i++ )
                 {
-                    set_f( &realBuffer[i][st->cldfbSyn->nab], 0.f, st->cldfbSyn->no_channels - st->cldfbSyn->nab );
-                    set_f( &imagBuffer[i][st->cldfbSyn->nab], 0.f, st->cldfbSyn->no_channels - st->cldfbSyn->nab );
+                    set_f( &realBuffer[i][st->cldfbSyn.nab], 0.f, st->cldfbSyn.no_channels - st->cldfbSyn.nab );
+                    set_f( &imagBuffer[i][st->cldfbSyn.nab], 0.f, st->cldfbSyn.no_channels - st->cldfbSyn.nab );
                 }
             }
 
-            cldfbSynthesis( realBuffer, imagBuffer, output, -1, st->cldfbSyn );
+            cldfbSynthesis( realBuffer, imagBuffer, output, -1, &st->cldfbSyn );
 
             /* set multiplication factor according to the sampling rate */
             delay_comp = NS2SA(st->output_Fs, DELAY_CLDFB_NS);

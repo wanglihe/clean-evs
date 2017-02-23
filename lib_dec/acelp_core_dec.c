@@ -797,14 +797,14 @@ void acelp_core_dec(
      *----------------------------------------------------------------*/
 
     /* check if the CLDFB works on the right sample rate */
-    if( (st->cldfbAna->no_channels * st->cldfbAna->no_col) != st->L_frame )
+    if( (st->cldfbAna.no_channels * st->cldfbAna.no_col) != st->L_frame )
     {
-        resampleCldfb( st->cldfbAna, st->L_frame*50 );
-        resampleCldfb( st->cldfbBPF, st->L_frame*50 );
+        resampleCldfb( &st->cldfbAna, st->L_frame*50 );
+        resampleCldfb( &st->cldfbBPF, st->L_frame*50 );
 
         if( st->ini_frame > 0 )
         {
-            st->cldfbSyn->bandsToZero = st->cldfbSyn->no_channels - st->cldfbAna->no_channels;
+            st->cldfbSyn.bandsToZero = st->cldfbSyn.no_channels - st->cldfbAna.no_channels;
         }
     }
 
@@ -825,40 +825,40 @@ void acelp_core_dec(
                    &st->stab_fac_smooth, st->mem_mean_pit, st->Track_on_hist, st->vibrato_hist, &st->psf_att, coder_type, bpf_error_signal );
 
     /* analysis of the synthesis at internal sampling rate */
-    cldfbAnalysis( syn, realBuffer, imagBuffer, -1, st->cldfbAna );
+    cldfbAnalysis( syn, realBuffer, imagBuffer, -1, &st->cldfbAna );
 
     /* analysis and add the BPF error signal */
-    addBassPostFilter( bpf_error_signal, st->bpf_off?0:-1, realBuffer, imagBuffer, st->cldfbBPF );
+    addBassPostFilter( bpf_error_signal, st->bpf_off?0:-1, realBuffer, imagBuffer, &st->cldfbBPF );
 
     /* set output mask for upsampling */
     if( st->bwidth == NB )
     {
         /* set NB mask for upsampling */
-        st->cldfbSyn->bandsToZero = st->cldfbSyn->no_channels - 10;
+        st->cldfbSyn.bandsToZero = st->cldfbSyn.no_channels - 10;
     }
-    else if( st->cldfbSyn->bandsToZero != st->cldfbSyn->no_channels - st->cldfbAna->no_channels )
+    else if( st->cldfbSyn.bandsToZero != st->cldfbSyn.no_channels - st->cldfbAna.no_channels )
     {
         /* in case of BW switching, re-init to default */
-        st->cldfbSyn->bandsToZero = st->cldfbSyn->no_channels - st->cldfbAna->no_channels;
+        st->cldfbSyn.bandsToZero = st->cldfbSyn.no_channels - st->cldfbAna.no_channels;
     }
 
     /*WB/SWB-FD_CNG*/
-    if( ( st->core_brate == FRAME_NO_DATA || st->core_brate == SID_2k40 ) && ( st->cng_type == FD_CNG ) && ( st->hFdCngDec->hFdCngCom->numCoreBands < st->cldfbSyn->no_channels ) )
+    if( ( st->core_brate == FRAME_NO_DATA || st->core_brate == SID_2k40 ) && ( st->cng_type == FD_CNG ) && ( st->hFdCngDec->hFdCngCom->numCoreBands < st->cldfbSyn.no_channels ) )
     {
         generate_comfort_noise_dec_hf( realBuffer,imagBuffer, st );
 
-        if( st->hFdCngDec->hFdCngCom->regularStopBand < st->cldfbSyn->no_channels )
+        if( st->hFdCngDec->hFdCngCom->regularStopBand < st->cldfbSyn.no_channels )
         {
-            st->cldfbSyn->bandsToZero = st->cldfbSyn->no_channels - st->hFdCngDec->hFdCngCom->regularStopBand;
+            st->cldfbSyn.bandsToZero = st->cldfbSyn.no_channels - st->hFdCngDec->hFdCngCom->regularStopBand;
         }
         else
         {
-            st->cldfbSyn->bandsToZero = 0;
+            st->cldfbSyn.bandsToZero = 0;
         }
     }
 
     /* synthesis of the combined signal */
-    cldfbSynthesis( realBuffer, imagBuffer, synth, -1, st->cldfbSyn );
+    cldfbSynthesis( realBuffer, imagBuffer, synth, -1, &st->cldfbSyn );
 
     /* save synthesis - needed in case of core switching */
     mvr2r( synth, st->previoussynth, output_frame );

@@ -123,8 +123,8 @@ void evs_enc(
     {
         updt_IO_switch_enc( st, input_frame );
         set_f( st->old_speech_shb, 0, L_LOOK_16k + L_SUBFR16k );
-        cldfb_reset_memory( st->cldfbAnaEnc );
-        cldfb_reset_memory( st->cldfbSynTd );
+        cldfb_reset_memory( &st->cldfbAnaEnc );
+        cldfb_reset_memory( &st->cldfbSynTd );
     }
 
     /*---------------------------------------------------------------------*

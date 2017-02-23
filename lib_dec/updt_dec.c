@@ -230,7 +230,7 @@ void updt_IO_switch_dec(
 
         st->use_acelp_preq = 0;
         if(st->last_flag_filter_NB == 1)
-            st->cldfbSyn->bandsToZero = 0;
+            st->cldfbSyn.bandsToZero = 0;
         st->last_active_bandsToZero_bwdec = 0;
         st->flag_NB_bwddec = 0;
         st->perc_bwddec = 0.0f;

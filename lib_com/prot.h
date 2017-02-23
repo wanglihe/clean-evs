@@ -8824,7 +8824,7 @@ void analysisCldfbEncoder (
 );
 
 int openCldfb (
-    HANDLE_CLDFB_FILTER_BANK *h_cldfb,   /* i/o : filter bank handle */
+    CLDFB_FILTER_BANK *h_cldfb,          /* i/o : filter bank */
     CLDFB_TYPE type,                     /* i   : analysis or synthesis */
     int samplerate                       /* i   : max samplerate to oeprate */
 );
@@ -8847,7 +8847,7 @@ int cldfb_reset_memory (
 );
 
 void deleteCldfb(
-    HANDLE_CLDFB_FILTER_BANK *h_cldfb  /* i/o : filter bank handle */
+    CLDFB_FILTER_BANK *h_cldfb   /* i/o : filter bank */
 );
 
 void fft_cldfb (

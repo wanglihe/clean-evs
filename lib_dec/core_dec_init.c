@@ -340,9 +340,9 @@ void open_decoder_LPD(
             st->last_core_bfi = TCX_20_CORE;
             st->pfstat.on=0;
             /* reset CLDFB memories */
-            cldfb_reset_memory( st->cldfbAna );
-            cldfb_reset_memory( st->cldfbBPF );
-            cldfb_reset_memory( st->cldfbSyn );
+            cldfb_reset_memory( &st->cldfbAna );
+            cldfb_reset_memory( &st->cldfbBPF );
+            cldfb_reset_memory( &st->cldfbSyn );
         }
         else if( (st->L_frame!=st->last_L_frame) && (st->L_frame<=L_FRAME16k) && (st->last_L_frame <=L_FRAME16k)) /* Rate switching between 12.8 and 16 kHz*/
         {

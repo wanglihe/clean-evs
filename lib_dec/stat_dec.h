@@ -432,9 +432,9 @@ typedef struct Decoder_State
     float psf_att;                                      /* Bass post-filter - post filter attenuation factor */
     float mem_mean_pit[L_TRACK_HIST];                   /* Bass post-filter - average pitch memory */
 
-    HANDLE_CLDFB_FILTER_BANK cldfbAna;                  /* main analysis filter bank handle */
-    HANDLE_CLDFB_FILTER_BANK cldfbBPF;                  /* BPF analysis filter bank handle */
-    HANDLE_CLDFB_FILTER_BANK cldfbSyn;                  /* main synthesis  filter bank handle */
+    CLDFB_FILTER_BANK cldfbAna;                         /* main analysis filter bank handle */
+    CLDFB_FILTER_BANK cldfbBPF;                         /* BPF analysis filter bank handle */
+    CLDFB_FILTER_BANK cldfbSyn;                         /* main synthesis  filter bank handle */
 
     short last_active_bandsToZero_bwdec;
     short flag_NB_bwddec;

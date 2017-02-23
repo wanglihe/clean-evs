@@ -591,14 +591,14 @@ void init_decoder(
     st->m_frame_type     = ACTIVE_FRAME;
     st->m_old_frame_type = ACTIVE_FRAME;
 
-    resampleCldfb( st->cldfbAna, st->L_frame*50 );
-    resampleCldfb( st->cldfbBPF, st->L_frame*50 );
+    resampleCldfb( &st->cldfbAna, st->L_frame*50 );
+    resampleCldfb( &st->cldfbBPF, st->L_frame*50 );
 
     /* Create FD_CNG instance */
     createFdCngDec( &st->hFdCngDec );
 
     /* Init FD-CNG */
-    initFdCngDec( st->hFdCngDec, st->cldfbSyn->scale );
+    initFdCngDec( st->hFdCngDec, st->cldfbSyn.scale );
 
     st->cngTDLevel = 0.f;
 

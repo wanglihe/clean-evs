@@ -166,23 +166,23 @@ static void decode_frame_type
             mode_switch_decoder_LPD( st, st->bwidth, st->total_brate, frame_size_index );
 
             /* Reconf. CLDFB: check if the CLDFB works on the right sample rate */
-            if ( (st->cldfbAna->no_channels * st->cldfbAna->no_col) != st->L_frame )
+            if ( (st->cldfbAna.no_channels * st->cldfbAna.no_col) != st->L_frame )
             {
-                resampleCldfb (st->cldfbAna, (st->L_frame * 50));
+                resampleCldfb (&st->cldfbAna, (st->L_frame * 50));
                 if( st->L_frame <= L_FRAME16k )
                 {
-                    resampleCldfb (st->cldfbBPF, (st->L_frame * 50));
+                    resampleCldfb (&st->cldfbBPF, (st->L_frame * 50));
                 }
             }
 
             if (st->bwidth == NB)
             {
-                short nBand_nb = (8000*st->cldfbSyn->no_channels / st->output_Fs);
-                st->cldfbSyn->bandsToZero =  st->cldfbSyn->no_channels - nBand_nb;
+                short nBand_nb = (8000*st->cldfbSyn.no_channels / st->output_Fs);
+                st->cldfbSyn.bandsToZero =  st->cldfbSyn.no_channels - nBand_nb;
             }
             else
             {
-                st->cldfbSyn->bandsToZero = 0;
+                st->cldfbSyn.bandsToZero = 0;
             }
 
             /*Reconf Frequency-domain based CNG*/

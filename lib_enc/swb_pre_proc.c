@@ -262,7 +262,7 @@ void swb_pre_proc(
             }
             st->cldfbHBLT = 0.9f * st->cldfbHBLT + 0.1f * ( 0.221462f /*=1/log10(32768)*/ * (log10(CldfbHB) - 1.0f) );
         }
-        cldfbSynthesis( realBufferFlipped, imagBufferFlipped, shb_speech, -1, st->cldfbSynTd );
+        cldfbSynthesis( realBufferFlipped, imagBufferFlipped, shb_speech, -1, &st->cldfbSynTd );
 
         if( st->extl != WB_TBE && st->extl != SWB_TBE && st->extl != FB_TBE )
         {
@@ -293,7 +293,7 @@ void swb_pre_proc(
         }
 
         /* Reset CLDFB synthesis buffer */
-        set_f( st->cldfbSynTd->cldfb_state, 0.0f, st->cldfbSynTd->p_filter_length + st->cldfbSynTd->no_channels*st->cldfbSynTd->no_col );
+        set_f( st->cldfbSynTd.cldfb_state, 0.0f, st->cldfbSynTd.p_filter_length + st->cldfbSynTd.no_channels*st->cldfbSynTd.no_col );
     }
 
     /* Memory reset to compensate for 0.9375 ms offset when transitioning from IO to SWB */

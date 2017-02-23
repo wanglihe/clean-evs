@@ -117,14 +117,14 @@ void core_switching_pre_dec(
                 }
 
                 /* CLDFB analysis of the synthesis at internal sampling rate */
-                cldfb_save_memory( st->cldfbAna );
-                cldfbAnalysis( st->syn_Overl, realBuffer, imagBuffer, delay_comp, st->cldfbAna );
-                cldfb_restore_memory( st->cldfbAna );
+                cldfb_save_memory( &st->cldfbAna );
+                cldfbAnalysis( st->syn_Overl, realBuffer, imagBuffer, delay_comp, &st->cldfbAna );
+                cldfb_restore_memory( &st->cldfbAna );
 
                 /* CLDFB synthesis of the combined signal */
-                cldfb_save_memory( st->cldfbSyn );
-                cldfbSynthesis( realBuffer, imagBuffer, st->fer_samples, delay_comp, st->cldfbSyn );
-                cldfb_restore_memory( st->cldfbSyn );
+                cldfb_save_memory( &st->cldfbSyn );
+                cldfbSynthesis( realBuffer, imagBuffer, st->fer_samples, delay_comp, &st->cldfbSyn );
+                cldfb_restore_memory( &st->cldfbSyn );
             }
 
             if( !st->last_con_tcx && st->last_core_bfi == ACELP_CORE && st->core == HQ_CORE )
@@ -233,9 +233,9 @@ void core_switching_pre_dec(
         st->Last_GSC_noisy_speech_flag = 0;
 
         /* reset CLDFB memories */
-        cldfb_reset_memory( st->cldfbAna );
-        cldfb_reset_memory( st->cldfbBPF );
-        cldfb_reset_memory( st->cldfbSyn );
+        cldfb_reset_memory( &st->cldfbAna );
+        cldfb_reset_memory( &st->cldfbBPF );
+        cldfb_reset_memory( &st->cldfbSyn );
 
         /* reset TBE memories */
         if( !st->last_con_tcx )

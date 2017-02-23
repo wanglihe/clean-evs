@@ -40,6 +40,7 @@ int main( int argc, char** argv )
     short noDelayCmp = 0;
     short data[L_FRAME48k];                               /* 'short' buffer for input signal */
     Indice ind_list[MAX_NUM_INDICES];                     /* list of indices */
+    Encoder_State est;
     Encoder_State *st;                                    /* MODE1 - encoder state structure */
     UWord8 pFrame[(MAX_BITS_PER_FRAME + 7) >> 3];
     Word16 pFrame_size = 0;
@@ -56,11 +57,7 @@ int main( int argc, char** argv )
      * Encoder initialization
      *------------------------------------------------------------------------------------------*/
 
-    if ( (st = (Encoder_State *) malloc( sizeof(Encoder_State) ) ) == NULL )
-    {
-        fprintf(stderr, "Can not allocate memory for encoder state structure\n");
-        exit(-1);
-    }
+    st = &est;
 
     io_ini_enc( argc, argv, &f_input, &f_stream, &f_rate, &f_bwidth,
                 &f_rf, &quietMode, &noDelayCmp, st );
@@ -212,7 +209,6 @@ int main( int argc, char** argv )
     if ( f_rate ) fclose ( f_rate );
     if ( f_bwidth ) fclose ( f_bwidth );
     destroy_encoder( st );
-    free( st );
 
 
     return 0;

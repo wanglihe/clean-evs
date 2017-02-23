@@ -648,15 +648,15 @@ void amr_wb_dec(
      *----------------------------------------------------------------*/
 
     /* check if the cldfb works on the right sample rate */
-    if( (st->cldfbAna->no_channels * st->cldfbAna->no_col) != L_FRAME )
+    if( (st->cldfbAna.no_channels * st->cldfbAna.no_col) != L_FRAME )
     {
         /* resample to ACELP internal sampling rate */
-        resampleCldfb (st->cldfbAna, INT_FS_12k8);
-        resampleCldfb (st->cldfbBPF, INT_FS_12k8);
+        resampleCldfb (&st->cldfbAna, INT_FS_12k8);
+        resampleCldfb (&st->cldfbBPF, INT_FS_12k8);
 
         if( st->ini_frame > 0 )
         {
-            st->cldfbSyn->bandsToZero = st->cldfbSyn->no_channels - st->cldfbAna->no_channels;
+            st->cldfbSyn.bandsToZero = st->cldfbSyn.no_channels - st->cldfbAna.no_channels;
         }
     }
 
@@ -666,21 +666,21 @@ void amr_wb_dec(
                    st->mem_mean_pit, st->Track_on_hist, st->vibrato_hist, &st->psf_att, GENERIC, bpf_error_signal );
 
     /* analysis of the synthesis at internal sampling rate */
-    cldfbAnalysis( syn, realBuffer, imagBuffer, -1, st->cldfbAna );
+    cldfbAnalysis( syn, realBuffer, imagBuffer, -1, &st->cldfbAna );
 
     /* analysis and add the BPF error signal */
-    addBassPostFilter( bpf_error_signal, st->bpf_off?0:-1, realBuffer, imagBuffer, st->cldfbBPF );
+    addBassPostFilter( bpf_error_signal, st->bpf_off?0:-1, realBuffer, imagBuffer, &st->cldfbBPF );
 
-    if( st->cldfbSyn->bandsToZero != st->cldfbSyn->no_channels - st->cldfbAna->no_channels )
+    if( st->cldfbSyn.bandsToZero != st->cldfbSyn.no_channels - st->cldfbAna.no_channels )
     {
         /* in case of BW switching, re-init to default */
-        st->cldfbSyn->bandsToZero = st->cldfbSyn->no_channels-st->cldfbAna->no_channels;
+        st->cldfbSyn.bandsToZero = st->cldfbSyn.no_channels-st->cldfbAna.no_channels;
     }
 
     cldfb_synth_set_bandsToZero( st, realBuffer, imagBuffer, CLDFB_NO_COL_MAX );
 
     /* synthesis of the combined signal */
-    cldfbSynthesis( realBuffer, imagBuffer, synth_out, -1, st->cldfbSyn );
+    cldfbSynthesis( realBuffer, imagBuffer, synth_out, -1, &st->cldfbSyn );
 
     /* save synthesis - needed in case of core switching */
     mvr2r( synth_out, st->previoussynth, output_frame );
@@ -701,7 +701,7 @@ void amr_wb_dec(
     /*-----------------------------------------------------------------*
      * Bandwidth extension 6kHz-8kHz
      *-----------------------------------------------------------------*/
-    if( output_frame >= L_FRAME16k && ((st->cldfbSyn->bandsToZero -  st->cldfbSyn->no_channels + 10 ) != 0 || st->last_flag_filter_NB != 1) )
+    if( output_frame >= L_FRAME16k && ((st->cldfbSyn.bandsToZero -  st->cldfbSyn.no_channels + 10 ) != 0 || st->last_flag_filter_NB != 1) )
     {
         hf_synth_amr_wb( st->core_brate, output_frame, Aq, exc2, syn, st->mem_syn_hf, st->delay_syn_hf, &st->prev_r, &st->fmerit_w_sm, &amr_io_class, st->mem_hp_interp,
                          synth_out, class_para, hf_gain, voice_factors, pitch_buf, st->ng_ener_ST, lsf_new, &st->frame_count, &st->ne_min, &st->fmerit_m_sm, &st->voice_fac_amr_wb_hf,

@@ -337,7 +337,7 @@ void cldfb_synth_set_bandsToZero(
             st->total_frame_cnt_bwddec = 500;
         }
 
-        for (i = 0; i < (st->cldfbSyn->no_channels - st->cldfbSyn->bandsToZero); i++)
+        for (i = 0; i < (st->cldfbSyn.no_channels - st->cldfbSyn.bandsToZero); i++)
         {
             nrg_bwddec = 0.0f;
             for (k = 0; k < nTimeSlots; k++)
@@ -353,7 +353,7 @@ void cldfb_synth_set_bandsToZero(
                 max_nrg = nrg_band[i];
             }
         }
-        for(; i < st->cldfbSyn->no_channels; i++)
+        for(; i < st->cldfbSyn.no_channels; i++)
         {
             nrg_band[i] = 0;
         }
@@ -394,7 +394,7 @@ void cldfb_synth_set_bandsToZero(
         {
             if( (st->perc_bwddec >= perc_detect || (st->perc_bwddec >= perc_miss && st->last_flag_filter_NB)) && (sum_s(st->flag_buffer, WBcnt) != 0)) /*decision hysterysis*/
             {
-                st->cldfbSyn->bandsToZero = ( st->cldfbSyn->no_channels - 10 );
+                st->cldfbSyn.bandsToZero = ( st->cldfbSyn.no_channels - 10 );
                 st->last_flag_filter_NB = 1; /*VAD processing must be dependent on hysterysis, as if hysterysis fails, but threshold passes, we dont want next vad frames to have NB only*/
             }
             else
@@ -418,7 +418,7 @@ void cldfb_synth_set_bandsToZero(
     {
         if(st->last_flag_filter_NB == 1)
         {
-            st->cldfbSyn->bandsToZero = st->last_active_bandsToZero_bwdec;
+            st->cldfbSyn.bandsToZero = st->last_active_bandsToZero_bwdec;
         }
         st->total_frame_cnt_bwddec++;
         if(st->total_frame_cnt_bwddec > 500)
@@ -427,7 +427,7 @@ void cldfb_synth_set_bandsToZero(
         }
     }
 
-    st->last_active_bandsToZero_bwdec = st->cldfbSyn->bandsToZero;
+    st->last_active_bandsToZero_bwdec = st->cldfbSyn.bandsToZero;
 
     return;
 }

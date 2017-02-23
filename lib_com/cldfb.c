@@ -408,7 +408,7 @@ static void configureCldfb(
  * open and configures a CLDFB handle
  *--------------------------------------------------------------------*/
 int openCldfb(
-    HANDLE_CLDFB_FILTER_BANK *h_cldfb,   /* i/o : filter bank handle */
+    CLDFB_FILTER_BANK *h_cldfb,          /* i/o : filter bank */
     CLDFB_TYPE type,                     /* i   : analysis or synthesis */
     int samplerate                       /* i   : max samplerate to oeprate */
 )
@@ -416,7 +416,7 @@ int openCldfb(
     HANDLE_CLDFB_FILTER_BANK hs;
     short buf_len;
 
-    hs = (HANDLE_CLDFB_FILTER_BANK) calloc(1, sizeof (CLDFB_FILTER_BANK));
+    hs = h_cldfb;
     if( hs == NULL )
     {
         return (1);
@@ -445,8 +445,6 @@ int openCldfb(
     }
 
     set_f(hs->cldfb_state, 0.0f, buf_len);
-
-    *h_cldfb = hs;
 
     return (0);
 }
@@ -505,10 +503,10 @@ void analysisCldfbEncoder(
         ppBuf_Imag[i] = &imagBuffer[i][0];
     }
 
-    cldfbAnalysis( timeIn,ppBuf_Real,ppBuf_Imag, samplesToProcess, st->cldfbAnaEnc );
+    cldfbAnalysis( timeIn,ppBuf_Real,ppBuf_Imag, samplesToProcess, &st->cldfbAnaEnc );
 
     st->currEnergyHF = GetEnergyCldfb( ppBuf_Ener, &st->currEnergyLookAhead, ppBuf_Real, ppBuf_Imag,
-                                       st->cldfbAnaEnc->no_channels, st->cldfbAnaEnc->no_col, &(st->tecEnc) );
+                                       st->cldfbAnaEnc.no_channels, st->cldfbAnaEnc.no_col, &(st->tecEnc) );
 
     return;
 }
@@ -593,19 +591,13 @@ static float GetEnergyCldfb(
 * Remove handle
 *--------------------------------------------------------------------*/
 void deleteCldfb(
-    HANDLE_CLDFB_FILTER_BANK * h_cldfb
+    CLDFB_FILTER_BANK * h_cldfb
 )
 {
-    HANDLE_CLDFB_FILTER_BANK hs = *h_cldfb;
 
-    if (hs)
+    if (h_cldfb->cldfb_state)
     {
-        if (hs->cldfb_state)
-        {
-            free(hs->cldfb_state);
-        }
-        free(hs);
-        *h_cldfb = NULL;
+        free(h_cldfb->cldfb_state);
     }
 
     return;

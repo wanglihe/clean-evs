@@ -180,19 +180,19 @@ void acelp_core_switch_dec(
                        st->mem_mean_pit, st->Track_on_hist, st->vibrato_hist, &st->psf_att, GENERIC, bpf_error_signal );
 
         /* CLDFB analysis of the synthesis at internal sampling rate */
-        cldfb_save_memory( st->cldfbAna );
-        cldfbAnalysis( synth_intFreq, realBuffer, imagBuffer, NS2SA(50*L_frame_for_cs, SWITCH_GAP_LENGTH_NS+DELAY_CLDFB_NS), st->cldfbAna );
-        cldfb_restore_memory( st->cldfbAna );
+        cldfb_save_memory( &st->cldfbAna );
+        cldfbAnalysis( synth_intFreq, realBuffer, imagBuffer, NS2SA(50*L_frame_for_cs, SWITCH_GAP_LENGTH_NS+DELAY_CLDFB_NS), &st->cldfbAna );
+        cldfb_restore_memory( &st->cldfbAna );
 
         /* CLDFB analysis and add the BPF error signal */
-        cldfb_save_memory( st->cldfbBPF );
-        addBassPostFilter( bpf_error_signal, st->bpf_off?0:NS2SA(50*L_frame_for_cs, SWITCH_GAP_LENGTH_NS+DELAY_CLDFB_NS), realBuffer, imagBuffer, st->cldfbBPF );
-        cldfb_restore_memory( st->cldfbBPF );
+        cldfb_save_memory( &st->cldfbBPF );
+        addBassPostFilter( bpf_error_signal, st->bpf_off?0:NS2SA(50*L_frame_for_cs, SWITCH_GAP_LENGTH_NS+DELAY_CLDFB_NS), realBuffer, imagBuffer, &st->cldfbBPF );
+        cldfb_restore_memory( &st->cldfbBPF );
 
         /* CLDFB synthesis of the combined signal */
-        cldfb_save_memory( st->cldfbSyn );
-        cldfbSynthesis( realBuffer, imagBuffer, synth_subfr_out, NS2SA(st->output_Fs, SWITCH_GAP_LENGTH_NS+DELAY_CLDFB_NS), st->cldfbSyn );
-        cldfb_restore_memory( st->cldfbSyn );
+        cldfb_save_memory( &st->cldfbSyn );
+        cldfbSynthesis( realBuffer, imagBuffer, synth_subfr_out, NS2SA(st->output_Fs, SWITCH_GAP_LENGTH_NS+DELAY_CLDFB_NS), &st->cldfbSyn );
+        cldfb_restore_memory( &st->cldfbSyn );
 
         mvr2r( synth_intFreq + NS2SA(L_frame_for_cs * 50, SWITCH_GAP_LENGTH_NS-DELAY_CLDFB_NS)-2, mem_synth, NS2SA(L_frame_for_cs * 50, DELAY_CLDFB_NS)+2 );     /* need for switching (-2 is due to 0 delay filtering) */
 
@@ -437,14 +437,14 @@ void acelp_core_switch_dec_bfi(
      *----------------------------------------------------------------*/
 
     /* CLDFB analysis of the synthesis at internal sampling rate */
-    cldfb_save_memory( st->cldfbAna );
-    cldfbAnalysis ( syn, realBuffer, imagBuffer, st->L_frame/2, st->cldfbAna );
-    cldfb_restore_memory( st->cldfbAna );
+    cldfb_save_memory( &st->cldfbAna );
+    cldfbAnalysis ( syn, realBuffer, imagBuffer, st->L_frame/2, &st->cldfbAna );
+    cldfb_restore_memory( &st->cldfbAna );
 
     /* CLDFB synthesis of the combined signal */
-    cldfb_save_memory( st->cldfbSyn );
-    cldfbSynthesis ( realBuffer, imagBuffer, synth_out, st->output_Fs*0.01, st->cldfbSyn );
-    cldfb_restore_memory( st->cldfbSyn );
+    cldfb_save_memory( &st->cldfbSyn );
+    cldfbSynthesis ( realBuffer, imagBuffer, synth_out, st->output_Fs*0.01, &st->cldfbSyn );
+    cldfb_restore_memory( &st->cldfbSyn );
 
     return;
 }

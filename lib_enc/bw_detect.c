@@ -49,7 +49,7 @@ void bw_detect(
         {
             float ScalFac = 1.0f;
 
-            ScalFac =  1/ ( st->cldfbAnaEnc->scale * st->cldfbAnaEnc->scale * 8.f);
+            ScalFac =  1/ ( st->cldfbAnaEnc.scale * st->cldfbAnaEnc.scale * 8.f);
             set_f( cldfb_bin, 0.001f, 9 );
 
             /* NB: 1.2 - 2.8 kHz, 4 cldfb-bands*/

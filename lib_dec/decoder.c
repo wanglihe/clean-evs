@@ -30,6 +30,7 @@ int main( int argc, char *argv[] )
 {
     FILE *f_stream;                     /* input bitstream file */
     FILE *f_synth;                      /* output synthesis file */
+    Decoder_State dst;
     Decoder_State *st;                  /* decoder state structure */
     short output_frame, dec_delay, zero_pad;
     short quietMode = 0;
@@ -51,11 +52,7 @@ int main( int argc, char *argv[] )
      * Decoder initialization
      *------------------------------------------------------------------------------------------*/
 
-    if ( (st = (Decoder_State *) malloc( sizeof(Decoder_State) ) ) == NULL )
-    {
-        fprintf(stderr, "Can not allocate memory for decoder state structure\n");
-        exit(-1);
-    }
+    st = &dst;
 
     io_ini_dec( argc, argv, &f_stream, &f_synth,
                 &quietMode, &noDelayCmp, st,
@@ -79,7 +76,6 @@ int main( int argc, char *argv[] )
                         quietMode
                       ) != 0 )
         {
-            free( st );
             fclose( f_synth );
             fclose( f_stream );
             return -1;
@@ -219,7 +215,6 @@ int main( int argc, char *argv[] )
         destroy_decoder( st );
     }
 
-    free( st );
 
     fclose( f_synth );
     fclose( f_stream );

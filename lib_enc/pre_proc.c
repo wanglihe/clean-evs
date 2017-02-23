@@ -164,7 +164,7 @@ void pre_proc(
 
     *vad_flag = wb_vad( st, fr_bands, localVAD, &noisy_speech_HO, &clean_speech_HO, &NB_speech_HO, &snr_sum_he, &localVAD_HE_SAD, &(st->flag_noisy_speech_snr) );
 
-    vad_flag_cldfb = vad_proc( realBuffer, imagBuffer, enerBuffer, st->cldfbAnaEnc->no_channels, &st->vad_st, &cldfb_addition,*vad_flag );
+    vad_flag_cldfb = vad_proc( realBuffer, imagBuffer, enerBuffer, st->cldfbAnaEnc.no_channels, &st->vad_st, &cldfb_addition,*vad_flag );
 
 
     /* Combine decisions from SADS */
@@ -232,7 +232,7 @@ void pre_proc(
         SetModeIndex( st, st->total_brate, st->bwidth );
     }
 
-    calcLoEnvCheckCorrHiLo( st->cldfbAnaEnc->no_col, freqTable, st->tecEnc.loBuffer, st->tecEnc.loTempEnv,
+    calcLoEnvCheckCorrHiLo( st->cldfbAnaEnc.no_col, freqTable, st->tecEnc.loBuffer, st->tecEnc.loTempEnv,
                             st->tecEnc.loTempEnv_ns, st->tecEnc.hiTempEnv, &(st->tecEnc.corrFlag) );
 
     /*---------------------------------------------------------------*

@@ -711,8 +711,8 @@ typedef struct
      * CLDFB analysis
      *----------------------------------------------------------------------------------*/
 
-    HANDLE_CLDFB_FILTER_BANK cldfbAnaEnc;          /* main analysis filter bank handle */
-    HANDLE_CLDFB_FILTER_BANK cldfbSynTd;
+    CLDFB_FILTER_BANK cldfbAnaEnc;          /* main analysis filter bank handle */
+    CLDFB_FILTER_BANK cldfbSynTd;
 
 
     /*----------------------------------------------------------------------------------*
