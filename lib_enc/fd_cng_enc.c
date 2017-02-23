@@ -11,26 +11,6 @@
 #include "options.h"
 
 /*-------------------------------------------------------------------*
-* createFdCngEnc()
-*
-*
-*-------------------------------------------------------------------*/
-
-void createFdCngEnc(HANDLE_FD_CNG_ENC* hFdCngEnc)
-{
-    HANDLE_FD_CNG_ENC hs;
-
-    /* Allocate memory */
-    hs = (HANDLE_FD_CNG_ENC) calloc(1, sizeof (FD_CNG_ENC));
-
-    createFdCngCom(&(hs->hFdCngCom));
-
-    *hFdCngEnc = hs;
-
-    return;
-}
-
-/*-------------------------------------------------------------------*
 * initFdCngEnc()
 *
 * Initialize FD_CNG
@@ -43,7 +23,7 @@ void initFdCngEnc(
 )
 {
     int j;
-    HANDLE_FD_CNG_COM hsCom = hsEnc->hFdCngCom;
+    HANDLE_FD_CNG_COM hsCom = &hsEnc->hFdCngCom;
 
     /* Initialize common */
 
@@ -121,7 +101,7 @@ void configureFdCngEnc(
     int bitrate
 )
 {
-    HANDLE_FD_CNG_COM hsCom = hsEnc->hFdCngCom;
+    HANDLE_FD_CNG_COM hsCom = &hsEnc->hFdCngCom;
     float   psizeDec[NPART];
     float   psize_invDec[NPART];
 
@@ -216,29 +196,6 @@ void configureFdCngEnc(
     return;
 }
 
-
-/*-------------------------------------------------------------------*
-* deleteFdCngEnc()
-*
-* Delete the instance of type FD_CNG
-*-------------------------------------------------------------------*/
-
-void deleteFdCngEnc(
-    HANDLE_FD_CNG_ENC *hFdCngEnc
-)
-{
-
-    HANDLE_FD_CNG_ENC hsEnc = *hFdCngEnc;
-    if (hsEnc != NULL)
-    {
-        deleteFdCngCom(&(hsEnc->hFdCngCom));
-        free(hsEnc);
-        *hFdCngEnc = NULL;
-    }
-
-    return;
-}
-
 /*-------------------------------------------------------------------*
 * resetFdCngEnc()
 *
@@ -289,8 +246,8 @@ void resetFdCngEnc(
     )
     {
         st->fd_cng_reset_flag = 1;
-        st->hFdCngEnc->hFdCngCom->msFrCnt_init_counter = 0;
-        st->hFdCngEnc->hFdCngCom->init_old = FLT_MAX;
+        st->hFdCngEnc.hFdCngCom.msFrCnt_init_counter = 0;
+        st->hFdCngEnc.hFdCngCom.init_old = FLT_MAX;
     }
     else if ( st->fd_cng_reset_flag > 0 && st->fd_cng_reset_flag < 10 )
     {
@@ -318,15 +275,15 @@ void perform_noise_estimation_enc(
 )
 {
     short i, j;
-    int   numCoreBands = st->hFdCngCom->numCoreBands;
-    int   regularStopBand = st->hFdCngCom->regularStopBand;
-    int   numSlots     = st->hFdCngCom->numSlots;
+    int   numCoreBands = st->hFdCngCom.numCoreBands;
+    int   regularStopBand = st->hFdCngCom.regularStopBand;
+    int   numSlots     = st->hFdCngCom.numSlots;
     float numSlots_inv = 1.f/(float)numSlots; /*enough if done only once*/
-    float * periodog   = st->hFdCngCom->periodog;
+    float * periodog   = st->hFdCngCom.periodog;
     float * ptr_per    = periodog;
-    int     npart      = st->hFdCngCom->npart;
-    int     nFFTpart   = st->hFdCngCom->nFFTpart;
-    float * psize      = st->hFdCngCom->psize;
+    int     npart      = st->hFdCngCom.npart;
+    int     nFFTpart   = st->hFdCngCom.nFFTpart;
+    float * psize      = st->hFdCngCom.psize;
     float * msPeriodog = st->msPeriodog;
     float * msNoiseEst = st->msNoiseEst;
 
@@ -344,14 +301,14 @@ void perform_noise_estimation_enc(
     /* Adjust to the desired time resolution by averaging the periodograms over the time slots */
     for(j=numCoreBands ; j<regularStopBand ; j++)
     {
-        (*ptr_per) = (enerBuffer[j] * numSlots_inv * st->hFdCngCom->scalingFactor);
+        (*ptr_per) = (enerBuffer[j] * numSlots_inv * st->hFdCngCom.scalingFactor);
         ptr_per++;
     }
 
     /* Adjust filterbank to the desired frequency resolution by averaging over spectral partitions for SID transmission */
     if (numCoreBands < regularStopBand)
     {
-        bandcombinepow(periodog, regularStopBand-numCoreBands, st->hFdCngCom->CLDFBpart, st->hFdCngCom->nCLDFBpart, st->hFdCngCom->CLDFBpsize_inv, &msPeriodog[nFFTpart]);
+        bandcombinepow(periodog, regularStopBand-numCoreBands, st->hFdCngCom.CLDFBpart, st->hFdCngCom.nCLDFBpart, st->hFdCngCom.CLDFBpsize_inv, &msPeriodog[nFFTpart]);
     }
 
     /* Compress MS inputs */
@@ -362,7 +319,7 @@ void perform_noise_estimation_enc(
                         st->msAlpha, st->msPsd, st->msPsdFirstMoment, st->msPsdSecondMoment,
                         st->msMinBuf, st->msBminWin, st->msBminSubWin,
                         st->msCurrentMin, st->msCurrentMinOut, st->msCurrentMinSubWindow,
-                        st->msLocalMinFlag, st->msNewMinFlag, st->msPeriodogBuf, &(st->msPeriodogBufPtr), st->hFdCngCom );
+                        st->msLocalMinFlag, st->msNewMinFlag, st->msPeriodogBuf, &(st->msPeriodogBufPtr), &st->hFdCngCom );
 
     /* Expand MS outputs */
     expand_range( msLogNoiseEst, msNoiseEst, npart );
@@ -439,7 +396,7 @@ void FdCng_encodeSID(
 )
 {
     int N;
-    HANDLE_FD_CNG_COM st = stenc->hFdCngCom;
+    HANDLE_FD_CNG_COM st = &stenc->hFdCngCom;
     float* E = stenc->msNoiseEst;
     float gain;
     int i, index;
@@ -565,8 +522,8 @@ void generate_comfort_noise_enc( Encoder_State *stcod )
     short i;
     float * ptr_r;
     float * ptr_i;
-    HANDLE_FD_CNG_ENC stenc = stcod->hFdCngEnc;
-    HANDLE_FD_CNG_COM st = stenc->hFdCngCom;
+    HANDLE_FD_CNG_ENC stenc = &stcod->hFdCngEnc;
+    HANDLE_FD_CNG_COM st = &stenc->hFdCngCom;
     float * cngNoiseLevel = st->cngNoiseLevel;
     float * ptr_level = cngNoiseLevel;
     short * seed = &(st->seed);

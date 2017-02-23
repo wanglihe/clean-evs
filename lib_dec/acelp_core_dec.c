@@ -333,7 +333,7 @@ void acelp_core_dec(
 
                 generate_comfort_noise_dec( NULL, NULL, st );
 
-                FdCng_exc( st->hFdCngDec->hFdCngCom, &st->CNG_mode, st->L_frame, st->lsp_old, st->first_CNG, st->lspCNG, Aq, lsp_new,lsf_new, exc, exc2, bwe_exc );
+                FdCng_exc( &st->hFdCngDec.hFdCngCom, &st->CNG_mode, st->L_frame, st->lsp_old, st->first_CNG, st->lspCNG, Aq, lsp_new,lsf_new, exc, exc2, bwe_exc );
 
                 mvr2r( exc2, exc3, st->L_frame );
             }
@@ -758,37 +758,37 @@ void acelp_core_dec(
         st->VAD = st->VAD && (coder_type != INACTIVE);
 
         /*Noisy speech detector*/
-        noisy_speech_detection( st->VAD, syn, st->hFdCngDec->hFdCngCom->frameSize, st->hFdCngDec->msNoiseEst, st->hFdCngDec->psize_shaping,
-                                st->hFdCngDec->nFFTpart_shaping, &(st->hFdCngDec->lp_noise), &(st->hFdCngDec->lp_speech), &(st->hFdCngDec->hFdCngCom->flag_noisy_speech) );
+        noisy_speech_detection( st->VAD, syn, st->hFdCngDec.hFdCngCom.frameSize, st->hFdCngDec.msNoiseEst, st->hFdCngDec.psize_shaping,
+                                st->hFdCngDec.nFFTpart_shaping, &(st->hFdCngDec.lp_noise), &(st->hFdCngDec.lp_speech), &(st->hFdCngDec.hFdCngCom.flag_noisy_speech) );
 
-        st->hFdCngDec->hFdCngCom->likelihood_noisy_speech = 0.99f*st->hFdCngDec->hFdCngCom->likelihood_noisy_speech + 0.01f*(float)st->hFdCngDec->hFdCngCom->flag_noisy_speech;
-        st->lp_noise = st->hFdCngDec->lp_noise;
+        st->hFdCngDec.hFdCngCom.likelihood_noisy_speech = 0.99f*st->hFdCngDec.hFdCngCom.likelihood_noisy_speech + 0.01f*(float)st->hFdCngDec.hFdCngCom.flag_noisy_speech;
+        st->lp_noise = st->hFdCngDec.lp_noise;
 
         /*Noise estimate*/
-        ApplyFdCng( syn, realBuffer, imagBuffer, st->hFdCngDec, st->m_frame_type, st, 0,
+        ApplyFdCng( syn, realBuffer, imagBuffer, &st->hFdCngDec, st->m_frame_type, st, 0,
                     ( coder_type == AUDIO && !st->GSC_noisy_speech ) );
 
         /* CNA: Generate additional comfort noise to mask potential coding artefacts */
         if( st->flag_cna && coder_type != AUDIO )
         {
-            generate_masking_noise( syn, st->hFdCngDec->hFdCngCom, st->hFdCngDec->hFdCngCom->frameSize, 0 );
+            generate_masking_noise( syn, &st->hFdCngDec.hFdCngCom, st->hFdCngDec.hFdCngCom.frameSize, 0 );
         }
         else if( st->flag_cna && coder_type == AUDIO && st->last_core == ACELP_CORE && st->last_coder_type != AUDIO )
         {
-            v_multc( st->hFdCngDec->hFdCngCom->olapBufferSynth2+5*st->hFdCngDec->hFdCngCom->frameSize/4, (float)(st->hFdCngDec->hFdCngCom->fftlen/2), temp_buf, st->hFdCngDec->hFdCngCom->frameSize/2);
-            v_add( temp_buf, syn, syn, st->hFdCngDec->hFdCngCom->frameSize/2);
+            v_multc( st->hFdCngDec.hFdCngCom.olapBufferSynth2+5*st->hFdCngDec.hFdCngCom.frameSize/4, (float)(st->hFdCngDec.hFdCngCom.fftlen/2), temp_buf, st->hFdCngDec.hFdCngCom.frameSize/2);
+            v_add( temp_buf, syn, syn, st->hFdCngDec.hFdCngCom.frameSize/2);
         }
     }
 
     if( st->flag_cna == 0 && st->L_frame == L_FRAME16k && st->last_flag_cna == 1 && ( (st->last_core == ACELP_CORE && st->last_coder_type != AUDIO) || st->last_core == AMR_WB_CORE) )
     {
-        v_multc( st->hFdCngDec->hFdCngCom->olapBufferSynth2+5*st->L_frame/4, 256.f, temp_buf, st->L_frame/2 );
+        v_multc( st->hFdCngDec.hFdCngCom.olapBufferSynth2+5*st->L_frame/4, 256.f, temp_buf, st->L_frame/2 );
         v_add( temp_buf, syn, syn, st->L_frame/2 );
     }
 
     if( st->flag_cna == 0 || coder_type == AUDIO )
     {
-        set_f( st->hFdCngDec->hFdCngCom->olapBufferSynth2, 0.f, st->hFdCngDec->hFdCngCom->fftlen );
+        set_f( st->hFdCngDec.hFdCngCom.olapBufferSynth2, 0.f, st->hFdCngDec.hFdCngCom.fftlen );
     }
 
     /*----------------------------------------------------------------*
@@ -843,13 +843,13 @@ void acelp_core_dec(
     }
 
     /*WB/SWB-FD_CNG*/
-    if( ( st->core_brate == FRAME_NO_DATA || st->core_brate == SID_2k40 ) && ( st->cng_type == FD_CNG ) && ( st->hFdCngDec->hFdCngCom->numCoreBands < st->cldfbSyn.no_channels ) )
+    if( ( st->core_brate == FRAME_NO_DATA || st->core_brate == SID_2k40 ) && ( st->cng_type == FD_CNG ) && ( st->hFdCngDec.hFdCngCom.numCoreBands < st->cldfbSyn.no_channels ) )
     {
         generate_comfort_noise_dec_hf( realBuffer,imagBuffer, st );
 
-        if( st->hFdCngDec->hFdCngCom->regularStopBand < st->cldfbSyn.no_channels )
+        if( st->hFdCngDec.hFdCngCom.regularStopBand < st->cldfbSyn.no_channels )
         {
-            st->cldfbSyn.bandsToZero = st->cldfbSyn.no_channels - st->hFdCngDec->hFdCngCom->regularStopBand;
+            st->cldfbSyn.bandsToZero = st->cldfbSyn.no_channels - st->hFdCngDec.hFdCngCom.regularStopBand;
         }
         else
         {

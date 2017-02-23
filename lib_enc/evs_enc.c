@@ -247,7 +247,7 @@ void evs_enc(
 
         /* Call main encoding function */
         enc_acelp_tcx_main( old_inp_16k + L_INP_MEM, st, coder_type, pitch, voicing, Aw, lsp_new,
-                            lsp_mid, st->hFdCngEnc, bwe_exc_extended, voice_factors, pitch_buf,
+                            lsp_mid, &st->hFdCngEnc, bwe_exc_extended, voice_factors, pitch_buf,
                             vad_hover_flag );
 
         /*---------------------------------------------------------------------*

@@ -201,7 +201,7 @@ void pre_proc(
 
     resetFdCngEnc ( st );
 
-    perform_noise_estimation_enc( band_energies, enerBuffer, st->hFdCngEnc );
+    perform_noise_estimation_enc( band_energies, enerBuffer, &st->hFdCngEnc );
 
     /*-----------------------------------------------------------------*
      * Select SID or FRAME_NO_DATA frame if DTX enabled
@@ -215,12 +215,12 @@ void pre_proc(
 
     if( (st->last_total_brate != st->total_brate) || (st->last_bwidth != st->bwidth) )
     {
-        configureFdCngEnc( st->hFdCngEnc, st->bwidth, st->rf_mode&&st->total_brate==13200?9600:st->total_brate );
+        configureFdCngEnc( &st->hFdCngEnc, st->bwidth, st->rf_mode&&st->total_brate==13200?9600:st->total_brate );
     }
-    if ( st->hFdCngEnc != NULL && st->Opt_DTX_ON )
+    if ( st->Opt_DTX_ON )
     {
-        AdjustFirstSID( st->hFdCngEnc->hFdCngCom->npart, st->hFdCngEnc->msPeriodog, st->hFdCngEnc->energy_ho,
-                        st->hFdCngEnc->msNoiseEst, st->hFdCngEnc->msNoiseEst_old, &(st->hFdCngEnc->hFdCngCom->active_frame_counter), st );
+        AdjustFirstSID( st->hFdCngEnc.hFdCngCom.npart, st->hFdCngEnc.msPeriodog, st->hFdCngEnc.energy_ho,
+                        st->hFdCngEnc.msNoiseEst, st->hFdCngEnc.msNoiseEst_old, &(st->hFdCngEnc.hFdCngCom.active_frame_counter), st );
     }
 
     /*----------------------------------------------------------------*

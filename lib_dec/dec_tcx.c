@@ -834,7 +834,7 @@ void decoder_tcx(
     /* Generate additional comfort noise to mask potential coding artefacts */
     if( st->flag_cna)
     {
-        generate_masking_noise_mdct(x, st->hFdCngDec->hFdCngCom);
+        generate_masking_noise_mdct(x, &st->hFdCngDec.hFdCngCom);
     }
 
     IMDCT( x,

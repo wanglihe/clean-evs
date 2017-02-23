@@ -682,9 +682,8 @@ void init_encoder(
     }
 
     /* FD-CNG encoder */
-    createFdCngEnc( &st->hFdCngEnc );
-    initFdCngEnc( st->hFdCngEnc, st->input_Fs, st->cldfbAnaEnc.scale );
-    configureFdCngEnc( st->hFdCngEnc, st->bwidth, st->rf_mode&&st->total_brate==13200?9600:st->total_brate );
+    initFdCngEnc( &st->hFdCngEnc, st->input_Fs, st->cldfbAnaEnc.scale );
+    configureFdCngEnc( &st->hFdCngEnc, st->bwidth, st->rf_mode&&st->total_brate==13200?9600:st->total_brate );
 
     /*  INIT CORE CODER  */
 
@@ -723,7 +722,6 @@ void destroy_encoder(
 {
     deleteCldfb( &st->cldfbSynTd );
     deleteCldfb( &st->cldfbAnaEnc );
-    deleteFdCngEnc( &st->hFdCngEnc );
 
     /* Close Core */
 

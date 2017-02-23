@@ -92,7 +92,7 @@ void enc_acelp_tcx_main(
         generate_comfort_noise_enc( st );
 
         /* Update Core Encoder */
-        core_encode_update_cng( st, hFdCngEnc->hFdCngCom->timeDomainBuffer, hFdCngEnc->hFdCngCom->A_cng, Aw );
+        core_encode_update_cng( st, hFdCngEnc->hFdCngCom.timeDomainBuffer, hFdCngEnc->hFdCngCom.A_cng, Aw );
     }
 
     /* coreSwitching update of Mode 1 parameters in the last frame */

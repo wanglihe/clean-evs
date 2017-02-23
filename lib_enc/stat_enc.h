@@ -78,7 +78,7 @@ typedef struct PLC_ENC_EVS
 /* Arrays and variables specific to encoder */
 typedef struct
 {
-    HANDLE_FD_CNG_COM hFdCngCom;
+    FD_CNG_COM hFdCngCom;
 
     float   msPeriodog[NPART]; /* Periodogram */
     float   msBminWin[NPART];
@@ -719,7 +719,7 @@ typedef struct
      * FD CNG handle
      *----------------------------------------------------------------------------------*/
 
-    HANDLE_FD_CNG_ENC hFdCngEnc;
+    FD_CNG_ENC hFdCngEnc;
     short fd_cng_reset_flag;
     float last_totalNoise;
     float totalNoise_increase_hist[TOTALNOISE_HIST_SIZE];

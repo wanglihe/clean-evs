@@ -26,7 +26,7 @@ typedef enum
 /* Arrays and variables specific to decoder */
 typedef struct
 {
-    HANDLE_FD_CNG_COM hFdCngCom;
+    FD_CNG_COM hFdCngCom;
 
     float   msPeriodog[NPART_SHAPING]; /* Periodogram */
     float   msBminWin[NPART_SHAPING];
@@ -990,7 +990,7 @@ typedef struct Decoder_State
     unsigned char    m_old_frame_type;                   /*ZERO_FRAME/SID_FRAME/ACTIVE_FRAME*/
 
     /*Frequency-domain-based CNG*/
-    HANDLE_FD_CNG_DEC            hFdCngDec;
+    FD_CNG_DEC            hFdCngDec;
 
     IGFDEC_INSTANCE  hIGFDec;
     short igf;

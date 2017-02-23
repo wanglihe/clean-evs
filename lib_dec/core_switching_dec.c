@@ -322,36 +322,36 @@ void core_switching_pre_dec(
     }
 
     /* Reconfigure CNG */
-    if ( st->hFdCngDec && ((st->last_L_frame!=st->L_frame ) ||
-                           (st->hFdCngDec->hFdCngCom->frameSize!=st->L_frame) ||
+    if ( ((st->last_L_frame!=st->L_frame ) ||
+                           (st->hFdCngDec.hFdCngCom.frameSize!=st->L_frame) ||
                            st->ini_frame == 0 || st->bwidth != st->last_bwidth))
     {
         /* || st->last_core == AMR_WB_CORE || st->last_codec_mode == MODE2)){*/
         if( st->core != AMR_WB_CORE )
         {
-            configureFdCngDec( st->hFdCngDec, st->bwidth, st->rf_flag==1&&st->total_brate==13200?9600:st->total_brate, st->L_frame );
+            configureFdCngDec( &st->hFdCngDec, st->bwidth, st->rf_flag==1&&st->total_brate==13200?9600:st->total_brate, st->L_frame );
         }
         else
         {
-            configureFdCngDec( st->hFdCngDec, WB, ACELP_8k00, st->L_frame );
+            configureFdCngDec( &st->hFdCngDec, WB, ACELP_8k00, st->L_frame );
 
             if( st->VAD )
             {
-                st->hFdCngDec->hFdCngCom->CngBitrate = st->total_brate;
+                st->hFdCngDec.hFdCngCom.CngBitrate = st->total_brate;
             }
         }
         if( st->last_L_frame!=st->L_frame && st->L_frame<=320 && st->last_L_frame<=320 )
         {
-            lerp( st->hFdCngDec->hFdCngCom->olapBufferSynth2, st->hFdCngDec->hFdCngCom->olapBufferSynth2, st->L_frame*2, st->last_L_frame*2 );
+            lerp( st->hFdCngDec.hFdCngCom.olapBufferSynth2, st->hFdCngDec.hFdCngCom.olapBufferSynth2, st->L_frame*2, st->last_L_frame*2 );
             if( st->total_brate<=SID_2k40 && st->last_total_brate<=SID_2k40 )
             {
-                lerp( st->hFdCngDec->hFdCngCom->olapBufferSynth, st->hFdCngDec->hFdCngCom->olapBufferSynth, st->L_frame*2, st->last_L_frame*2 );
+                lerp( st->hFdCngDec.hFdCngCom.olapBufferSynth, st->hFdCngDec.hFdCngCom.olapBufferSynth, st->L_frame*2, st->last_L_frame*2 );
                 if( st->L_frame==L_FRAME )
                 {
                     short n;
                     for (n=0; n < st->L_frame*2; n++)
                     {
-                        st->hFdCngDec->hFdCngCom->olapBufferSynth[n] = st->hFdCngDec->hFdCngCom->olapBufferSynth[n]*0.6250f;
+                        st->hFdCngDec.hFdCngCom.olapBufferSynth[n] = st->hFdCngDec.hFdCngCom.olapBufferSynth[n]*0.6250f;
                     }
                 }
                 else
@@ -359,7 +359,7 @@ void core_switching_pre_dec(
                     short n;
                     for (n=0; n < st->L_frame*2; n++)
                     {
-                        st->hFdCngDec->hFdCngCom->olapBufferSynth[n] =st->hFdCngDec->hFdCngCom->olapBufferSynth[n]*1.6f;
+                        st->hFdCngDec.hFdCngCom.olapBufferSynth[n] =st->hFdCngDec.hFdCngCom.olapBufferSynth[n]*1.6f;
                     }
                 }
             }

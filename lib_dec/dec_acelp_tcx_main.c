@@ -186,33 +186,33 @@ static void decode_frame_type
             }
 
             /*Reconf Frequency-domain based CNG*/
-            configureFdCngDec( st->hFdCngDec, st->bwidth, st->rf_flag==1&&st->total_brate==13200?9600:st->total_brate, st->L_frame );
+            configureFdCngDec( &st->hFdCngDec, st->bwidth, st->rf_flag==1&&st->total_brate==13200?9600:st->total_brate, st->L_frame );
             if ( st->last_L_frame!=st->L_frame && st->L_frame<=320 && st->last_L_frame<=320 )
             {
-                lerp( st->hFdCngDec->hFdCngCom->olapBufferSynth2, st->hFdCngDec->hFdCngCom->olapBufferSynth2, st->L_frame*2, st->last_L_frame*2 );
-                if ( st->m_frame_type==SID_FRAME && st->hFdCngDec->hFdCngCom->frame_type_previous!= ACTIVE_FRAME )
+                lerp( st->hFdCngDec.hFdCngCom.olapBufferSynth2, st->hFdCngDec.hFdCngCom.olapBufferSynth2, st->L_frame*2, st->last_L_frame*2 );
+                if ( st->m_frame_type==SID_FRAME && st->hFdCngDec.hFdCngCom.frame_type_previous!= ACTIVE_FRAME )
                 {
-                    lerp( st->hFdCngDec->hFdCngCom->olapBufferSynth, st->hFdCngDec->hFdCngCom->olapBufferSynth, st->L_frame*2, st->last_L_frame*2 );
+                    lerp( st->hFdCngDec.hFdCngCom.olapBufferSynth, st->hFdCngDec.hFdCngCom.olapBufferSynth, st->L_frame*2, st->last_L_frame*2 );
                     if( st->L_frame==L_FRAME)
                     {
                         for (n=0; n < st->L_frame*2; n++)
                         {
-                            st->hFdCngDec->hFdCngCom->olapBufferSynth[n] = st->hFdCngDec->hFdCngCom->olapBufferSynth[n]*1.25f;
+                            st->hFdCngDec.hFdCngCom.olapBufferSynth[n] = st->hFdCngDec.hFdCngCom.olapBufferSynth[n]*1.25f;
                         }
                     }
                     else
                     {
                         for (n=0; n < st->L_frame*2; n++)
                         {
-                            st->hFdCngDec->hFdCngCom->olapBufferSynth[n] = st->hFdCngDec->hFdCngCom->olapBufferSynth[n]/1.25f;
+                            st->hFdCngDec.hFdCngCom.olapBufferSynth[n] = st->hFdCngDec.hFdCngCom.olapBufferSynth[n]/1.25f;
                         }
                     }
                 }
             }
             if ( st->bwidth!=st->last_bwidth )
             {
-                st->hFdCngDec->hFdCngCom->msFrCnt_init_counter = 0;
-                st->hFdCngDec->hFdCngCom->init_old = FLT_MAX;
+                st->hFdCngDec.hFdCngCom.msFrCnt_init_counter = 0;
+                st->hFdCngDec.hFdCngCom.init_old = FLT_MAX;
             }
 
             if( st->tcxonly )

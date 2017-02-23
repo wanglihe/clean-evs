@@ -594,11 +594,8 @@ void init_decoder(
     resampleCldfb( &st->cldfbAna, st->L_frame*50 );
     resampleCldfb( &st->cldfbBPF, st->L_frame*50 );
 
-    /* Create FD_CNG instance */
-    createFdCngDec( &st->hFdCngDec );
-
     /* Init FD-CNG */
-    initFdCngDec( st->hFdCngDec, st->cldfbSyn.scale );
+    initFdCngDec( &st->hFdCngDec, st->cldfbSyn.scale );
 
     st->cngTDLevel = 0.f;
 
@@ -648,8 +645,6 @@ void destroy_decoder(
     deleteCldfb( &st->cldfbAna );           /* delete analysis for max. SR 16kHz */
     deleteCldfb( &st->cldfbBPF );           /* delete analysis BPF for max. SR 16kHz */
     deleteCldfb( &st->cldfbSyn );           /* delete synthesis for output SR */
-
-    deleteFdCngDec( &st->hFdCngDec );
 
     return;
 }

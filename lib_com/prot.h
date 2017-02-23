@@ -8379,14 +8379,6 @@ float construct_snr_thresh(
     int bw_index                       /*(i) band width index*/
 );
 
-void createFdCngCom(
-    HANDLE_FD_CNG_COM* hFdCngCom
-);
-
-void deleteFdCngCom(
-    HANDLE_FD_CNG_COM * hFdCngCom
-);
-
 void initFdCngCom(
     HANDLE_FD_CNG_COM hs,              /* i/o: Contains the variables related to the FD-based CNG process */
     float scale
@@ -8537,14 +8529,6 @@ void lpc_from_spectrum(
     float preemph_fac
 );
 
-void createFdCngDec(
-    HANDLE_FD_CNG_DEC* hFdCngDec
-);
-
-void deleteFdCngDec(
-    HANDLE_FD_CNG_DEC * hFdCngDec
-);
-
 void initFdCngDec(
     HANDLE_FD_CNG_DEC hs,            /* i/o: Contains the variables related to the FD-based CNG process */
     float scale                    /* i: scaling factor */
@@ -8605,15 +8589,6 @@ void noisy_speech_detection(
     float *lp_noise,              /* i/o: long term total Noise energy average     */
     float *lp_speech,             /* i/o: long term active speech energy average   */
     short *flag_noisy_speech
-);
-
-
-void createFdCngEnc(
-    HANDLE_FD_CNG_ENC* hFdCngEnc
-);
-
-void deleteFdCngEnc(
-    HANDLE_FD_CNG_ENC * hFdCngEnc
 );
 
 void configureFdCngEnc(

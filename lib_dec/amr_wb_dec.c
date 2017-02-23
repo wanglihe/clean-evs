@@ -606,40 +606,40 @@ void amr_wb_dec(
         /*VAD only for non inactive frame*/
         st->VAD = (st->VAD && (coder_type != INACTIVE));
 
-        ApplyFdCng( syn, NULL, NULL, st->hFdCngDec, st->m_frame_type, st, 0, 0 );
+        ApplyFdCng( syn, NULL, NULL, &st->hFdCngDec, st->m_frame_type, st, 0, 0 );
 
-        st->hFdCngDec->hFdCngCom->frame_type_previous = st->m_frame_type;
+        st->hFdCngDec.hFdCngCom.frame_type_previous = st->m_frame_type;
 
         /*Noisy speech detector*/
-        noisy_speech_detection( st->VAD, syn, st->hFdCngDec->hFdCngCom->frameSize, st->hFdCngDec->msNoiseEst, st->hFdCngDec->psize_shaping,
-                                st->hFdCngDec->nFFTpart_shaping, &(st->hFdCngDec->lp_noise), &(st->hFdCngDec->lp_speech), &(st->hFdCngDec->hFdCngCom->flag_noisy_speech));
+        noisy_speech_detection( st->VAD, syn, st->hFdCngDec.hFdCngCom.frameSize, st->hFdCngDec.msNoiseEst, st->hFdCngDec.psize_shaping,
+                                st->hFdCngDec.nFFTpart_shaping, &(st->hFdCngDec.lp_noise), &(st->hFdCngDec.lp_speech), &(st->hFdCngDec.hFdCngCom.flag_noisy_speech));
 
-        st->hFdCngDec->hFdCngCom->likelihood_noisy_speech = 0.99f*st->hFdCngDec->hFdCngCom->likelihood_noisy_speech + 0.01f*(float)st->hFdCngDec->hFdCngCom->flag_noisy_speech;
-        st->lp_noise = st->hFdCngDec->lp_noise;
+        st->hFdCngDec.hFdCngCom.likelihood_noisy_speech = 0.99f*st->hFdCngDec.hFdCngCom.likelihood_noisy_speech + 0.01f*(float)st->hFdCngDec.hFdCngCom.flag_noisy_speech;
+        st->lp_noise = st->hFdCngDec.lp_noise;
 
         if( st->flag_cna && (st->psf_lp_noise >= 15.f) )
         {
             flag_cna = 1;
-            generate_masking_noise( syn, st->hFdCngDec->hFdCngCom, st->hFdCngDec->hFdCngCom->frameSize, AMR_WB_CORE );
+            generate_masking_noise( syn, &st->hFdCngDec.hFdCngCom, st->hFdCngDec.hFdCngCom.frameSize, AMR_WB_CORE );
         }
         else if ( st->flag_cna )
         {
-            generate_masking_noise_update_seed(st->hFdCngDec->hFdCngCom);
+            generate_masking_noise_update_seed(&st->hFdCngDec.hFdCngCom);
         }
     }
     else if ( st->flag_cna )
     {
-        generate_masking_noise_update_seed(st->hFdCngDec->hFdCngCom);
+        generate_masking_noise_update_seed(&st->hFdCngDec.hFdCngCom);
     }
 
     if( flag_cna == 0 )
     {
         if( st->last_flag_cna == 1 && ( (st->last_core == ACELP_CORE && st->last_coder_type != AUDIO) || st->last_core == AMR_WB_CORE) )
         {
-            v_multc( st->hFdCngDec->hFdCngCom->olapBufferSynth2+5*L_FRAME/4, 256.f, tmp_buffer, L_FRAME/2 );
+            v_multc( st->hFdCngDec.hFdCngCom.olapBufferSynth2+5*L_FRAME/4, 256.f, tmp_buffer, L_FRAME/2 );
             v_add( tmp_buffer, syn, syn, L_FRAME/2 );
         }
-        set_f( st->hFdCngDec->hFdCngCom->olapBufferSynth2, 0.f, L_FRAME*2 );
+        set_f( st->hFdCngDec.hFdCngCom.olapBufferSynth2, 0.f, L_FRAME*2 );
     }
 
     /*----------------------------------------------------------------*

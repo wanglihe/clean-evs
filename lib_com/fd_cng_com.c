@@ -16,28 +16,6 @@
 
 static void mhvals( int d, float * m );
 
-
-/*-------------------------------------------------------------------
- * createFdCngCom()
- *
- * Create an instance of type FD_CNG_COM
- *-------------------------------------------------------------------*/
-
-void createFdCngCom(
-    HANDLE_FD_CNG_COM * hFdCngCom
-)
-{
-    HANDLE_FD_CNG_COM hs;
-
-    /* Allocate memory */
-    hs = (HANDLE_FD_CNG_COM) calloc(1, sizeof (FD_CNG_COM));
-
-    *hFdCngCom = hs;
-
-    return;
-}
-
-
 /*-------------------------------------------------------------------
  * initFdCngCom()
  *
@@ -90,27 +68,6 @@ void initFdCngCom(
     hs->msFrCnt              = MSSUBFRLEN;
     hs->msMinBufferPtr       = 0;
     set_f( hs->msAlphaCor, 0.3f, 2 );
-
-    return;
-}
-
-
-/*-------------------------------------------------------------------
- * deleteFdCngCom()
- *
- * Delete an instance of type FD_CNG_COM
- *-------------------------------------------------------------------*/
-
-void deleteFdCngCom(
-    HANDLE_FD_CNG_COM * hFdCngCom /* i/o: Contains the variables related to the FD-based CNG process */
-)
-{
-    HANDLE_FD_CNG_COM hsCom = *hFdCngCom;
-    if (hsCom != NULL)
-    {
-        free(hsCom);
-        *hFdCngCom = NULL;
-    }
 
     return;
 }

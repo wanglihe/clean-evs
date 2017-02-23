@@ -166,7 +166,7 @@ void acelp_core_switch_dec(
 
         if( st->flag_cna )
         {
-            generate_masking_noise( synth_intFreq, st->hFdCngDec->hFdCngCom, 2*L_SUBFR, 0 );
+            generate_masking_noise( synth_intFreq, &st->hFdCngDec.hFdCngCom, 2*L_SUBFR, 0 );
         }
 
         /*----------------------------------------------------------------*

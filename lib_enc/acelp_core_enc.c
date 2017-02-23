@@ -218,13 +218,13 @@ void acelp_core_enc(
         {
             if( st->core_brate == SID_2k40 )
             {
-                FdCng_encodeSID( st->hFdCngEnc, st, st->preemph_fac );
+                FdCng_encodeSID( &st->hFdCngEnc, st, st->preemph_fac );
                 st->last_CNG_L_frame = st->L_frame;
             }
 
             generate_comfort_noise_enc( st );
 
-            FdCng_exc( st->hFdCngEnc->hFdCngCom, &st->CNG_mode, st->L_frame, st->lsp_old, st->first_CNG, st->lspCNG, Aq, lsp_new,lsf_new, exc, exc2, bwe_exc);
+            FdCng_exc( &st->hFdCngEnc.hFdCngCom, &st->CNG_mode, st->L_frame, st->lsp_old, st->first_CNG, st->lspCNG, Aq, lsp_new,lsf_new, exc, exc2, bwe_exc);
             mvr2r( exc2, exc3, st->L_frame );
             if( st->core_brate == SID_2k40 )
             {

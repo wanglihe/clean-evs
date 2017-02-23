@@ -608,7 +608,7 @@ void evs_dec(
             st->cldfbSyn.nab = min( st->cldfbAna.no_channels, st->cldfbSyn.no_channels );
             st->cldfbAna.nab = 0;
 
-            if( st->hFdCngDec != NULL && (st->sr_core == 8000 || st->sr_core == 12800 || st->sr_core == 16000) && st->total_brate <= ACELP_32k )
+            if( (st->sr_core == 8000 || st->sr_core == 12800 || st->sr_core == 16000) && st->total_brate <= ACELP_32k )
             {
                 /* -------------------------------------------------------------- *
                  * In CLDFB domain:
@@ -616,26 +616,26 @@ void evs_dec(
                  *   - do CNG during inactive frames
                  * -------------------------------------------------------------- */
 
-                noisy_speech_detection( st->VAD && st->m_frame_type==ACTIVE_FRAME, output, st->hFdCngDec->hFdCngCom->frameSize,
-                                        st->hFdCngDec->msNoiseEst, st->hFdCngDec->psize_shaping, st->hFdCngDec->nFFTpart_shaping,
-                                        &(st->hFdCngDec->lp_noise), &(st->hFdCngDec->lp_speech), &(st->hFdCngDec->hFdCngCom->flag_noisy_speech) );
+                noisy_speech_detection( st->VAD && st->m_frame_type==ACTIVE_FRAME, output, st->hFdCngDec.hFdCngCom.frameSize,
+                                        st->hFdCngDec.msNoiseEst, st->hFdCngDec.psize_shaping, st->hFdCngDec.nFFTpart_shaping,
+                                        &(st->hFdCngDec.lp_noise), &(st->hFdCngDec.lp_speech), &(st->hFdCngDec.hFdCngCom.flag_noisy_speech) );
 
-                st->hFdCngDec->hFdCngCom->likelihood_noisy_speech = 0.99f*st->hFdCngDec->hFdCngCom->likelihood_noisy_speech + 0.01f*(float)st->hFdCngDec->hFdCngCom->flag_noisy_speech;
+                st->hFdCngDec.hFdCngCom.likelihood_noisy_speech = 0.99f*st->hFdCngDec.hFdCngCom.likelihood_noisy_speech + 0.01f*(float)st->hFdCngDec.hFdCngCom.flag_noisy_speech;
 
-                st->lp_noise = st->hFdCngDec->lp_noise;
+                st->lp_noise = st->hFdCngDec.lp_noise;
 
-                ApplyFdCng( output, realBuffer, imagBuffer, st->hFdCngDec, st->m_frame_type, st, concealWholeFrame, 0 );
+                ApplyFdCng( output, realBuffer, imagBuffer, &st->hFdCngDec, st->m_frame_type, st, concealWholeFrame, 0 );
 
                 /* Generate additional comfort noise to mask potential coding artefacts */
                 if( st->m_frame_type == ACTIVE_FRAME && st->flag_cna )
                 {
-                    generate_masking_noise( output, st->hFdCngDec->hFdCngCom, st->hFdCngDec->hFdCngCom->frameSize, 0 );
+                    generate_masking_noise( output, &st->hFdCngDec.hFdCngCom, st->hFdCngDec.hFdCngCom.frameSize, 0 );
                 }
             }
 
             if( st->flag_cna == 0 && st->L_frame == L_FRAME16k && st->last_flag_cna == 1 && ( (st->last_core == ACELP_CORE && st->last_coder_type != AUDIO) || st->last_core == TCX_20_CORE || st->last_core == AMR_WB_CORE ) )
             {
-                v_multc( st->hFdCngDec->hFdCngCom->olapBufferSynth2+5*st->L_frame/4, 256.f, tmp_buffer, st->L_frame/2 );
+                v_multc( st->hFdCngDec.hFdCngCom.olapBufferSynth2+5*st->L_frame/4, 256.f, tmp_buffer, st->L_frame/2 );
                 v_add( tmp_buffer, output, output, st->L_frame/2 );
             }
 
@@ -648,19 +648,19 @@ void evs_dec(
                 float timeDomainBuffer[L_FRAME16k];
                 float A[M+1];
 
-                mvr2r( st->hFdCngDec->hFdCngCom->timeDomainBuffer, timeDomainBuffer, st->L_frame );
-                mvr2r( st->hFdCngDec->hFdCngCom->A_cng, A, M+1 );
+                mvr2r( st->hFdCngDec.hFdCngCom.timeDomainBuffer, timeDomainBuffer, st->L_frame );
+                mvr2r( st->hFdCngDec.hFdCngCom.A_cng, A, M+1 );
 
                 update_decoder_LPD_cng( st, coder_type, timeDomainBuffer, A, st->p_bpf_noise_buf );
 
                 /* Generate additional comfort noise to mask potential coding artefacts */
                 if( st->flag_cna )
                 {
-                    generate_masking_noise( timeDomainBuffer, st->hFdCngDec->hFdCngCom, st->hFdCngDec->hFdCngCom->frameSize, 0 );
+                    generate_masking_noise( timeDomainBuffer, &st->hFdCngDec.hFdCngCom, st->hFdCngDec.hFdCngCom.frameSize, 0 );
                 }
                 else if( st->L_frame == L_FRAME16k && st->last_flag_cna == 1 && ( (st->last_core == ACELP_CORE && st->last_coder_type != AUDIO) || st->last_core == TCX_20_CORE || st->last_core == AMR_WB_CORE ) )
                 {
-                    v_multc( st->hFdCngDec->hFdCngCom->olapBufferSynth2+5*st->L_frame/4, 256.f, tmp_buffer, st->L_frame/2 );
+                    v_multc( st->hFdCngDec.hFdCngCom.olapBufferSynth2+5*st->L_frame/4, 256.f, tmp_buffer, st->L_frame/2 );
                     v_add( tmp_buffer, timeDomainBuffer, timeDomainBuffer, st->L_frame/2 );
                 }
 
@@ -677,16 +677,16 @@ void evs_dec(
                 {
                     st->cldfbSyn.bandsToZero = st->cldfbSyn.no_channels - 10;
                 }
-                else if( st->hFdCngDec->hFdCngCom->regularStopBand < st->cldfbSyn.no_channels )
+                else if( st->hFdCngDec.hFdCngCom.regularStopBand < st->cldfbSyn.no_channels )
                 {
-                    st->cldfbSyn.bandsToZero = st->cldfbSyn.no_channels - st->hFdCngDec->hFdCngCom->regularStopBand;
+                    st->cldfbSyn.bandsToZero = st->cldfbSyn.no_channels - st->hFdCngDec.hFdCngCom.regularStopBand;
                 }
                 cldfbAnalysis( timeDomainBuffer, realBuffer, imagBuffer, -1, &st->cldfbAna );
             }
 
             if( st->flag_cna == 0 )
             {
-                set_f( st->hFdCngDec->hFdCngCom->olapBufferSynth2, 0.f, st->hFdCngDec->hFdCngCom->fftlen );
+                set_f( st->hFdCngDec.hFdCngCom.olapBufferSynth2, 0.f, st->hFdCngDec.hFdCngCom.fftlen );
             }
 
             if( st->p_bpf_noise_buf )
@@ -1011,7 +1011,7 @@ void evs_dec(
     }
 
     st->last_flag_cna = st->flag_cna;
-    st->hFdCngDec->hFdCngCom->frame_type_previous = st->m_frame_type;
+    st->hFdCngDec.hFdCngCom.frame_type_previous = st->m_frame_type;
 
     st->prev_last_core = st->last_core;
     st->prev_bws_cnt = st->bws_cnt;
