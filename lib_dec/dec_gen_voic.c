@@ -52,7 +52,7 @@ void decod_gen_voic(
     float norm_gain_preQ;
     short pitch_limit_flag;
 
-    DTFS_STRUCTURE *PREVP, *CURRP;
+    DTFS_STRUCTURE PREVP_LOCAL, CURRP_LOCAL;
     short shft_prev = 0, shft_curr = 0;
     float ph_offset, dummy2[2], out[L_FRAME16k], enratio = 0.0f;
     float sp_enratio, curr_spch_nrg, prev_spch_nrg, curr_res_nrg, prev_res_nrg, syn_tmp[L_FRAME16k], mem_tmp[M];
@@ -237,8 +237,11 @@ void decod_gen_voic(
                 st->bfi_pitch < 150 &&
                 pitch_buf[NB_SUBFR16k-1] < 150 )
         {
-            PREVP = DTFS_new();
-            CURRP = DTFS_new();
+             DTFS_STRUCTURE *PREVP = &PREVP_LOCAL;
+             DTFS_STRUCTURE *CURRP = &CURRP_LOCAL;
+
+             DTFS_new(PREVP);
+             DTFS_new(CURRP);
 
             DTFS_to_fs( st->old_exc2+shft_prev, (short)rint_new( st->bfi_pitch ), PREVP, (short)st->output_Fs, do_WI );
             DTFS_to_fs( exc2+shft_curr, (short)rint_new( pitch_buf[NB_SUBFR16k-1] ), CURRP, (short)st->output_Fs, do_WI );
@@ -254,9 +257,6 @@ void decod_gen_voic(
             {
                 interp_code_4over2( exc + i_subfr, bwe_exc + (i_subfr*2), L_SUBFR );
             }
-
-            free(PREVP);
-            free(CURRP);
         }
     }
 

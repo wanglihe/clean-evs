@@ -28,10 +28,18 @@ void ppp_voiced_decoder(
     int pl, l;
     float interp_delay[3], temp_l, temp_pl, diff;
 
-    DTFS_STRUCTURE *TMPDTFS = DTFS_new();
-    DTFS_STRUCTURE *CURRP_Q_D = DTFS_new();
+    DTFS_STRUCTURE TMPDTFS_LOCAL;
+    DTFS_STRUCTURE CURRP_Q_D_LOCAL;
+    DTFS_STRUCTURE dtfs_temp_LOCAL;
 
-    DTFS_STRUCTURE *dtfs_temp = DTFS_new();
+    DTFS_STRUCTURE *TMPDTFS   = &TMPDTFS_LOCAL;
+    DTFS_STRUCTURE *CURRP_Q_D = &CURRP_Q_D_LOCAL;
+    DTFS_STRUCTURE *dtfs_temp = &dtfs_temp_LOCAL;
+
+    DTFS_new(TMPDTFS);
+    DTFS_new(CURRP_Q_D);
+    DTFS_new(dtfs_temp);
+
 
     if ( st->bwidth == NB )
     {
@@ -178,10 +186,6 @@ void ppp_voiced_decoder(
 
     mvr2r(dtfs_temp->a, st->dtfs_dec_a, MAXLAG_WI);
     mvr2r(dtfs_temp->b, st->dtfs_dec_b, MAXLAG_WI);
-
-    free(TMPDTFS);
-    free(CURRP_Q_D);
-    free(dtfs_temp);
 
     return;
 }

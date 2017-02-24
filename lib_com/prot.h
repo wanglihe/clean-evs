@@ -4055,8 +4055,8 @@ void realft(
     short isign                       /* i  : sign +1 or -1           */
 );
 
-DTFS_STRUCTURE *DTFS_new(
-    void
+void DTFS_new(
+    DTFS_STRUCTURE *
 );
 
 void DTFS_copy(

@@ -52,12 +52,26 @@ void ppp_voiced_encoder(
     float sp_hb_enratio;
     float low_band_en;
 
-    DTFS_STRUCTURE *CURRP_NQ = DTFS_new();
-    DTFS_STRUCTURE *TMPDTFS = DTFS_new();
-    DTFS_STRUCTURE *TMPDTFS2 = DTFS_new();
-    DTFS_STRUCTURE *TMPDTFS3 = DTFS_new();
-    DTFS_STRUCTURE *CURRP_Q_E = DTFS_new();
-    DTFS_STRUCTURE *dtfs_temp = DTFS_new();
+    DTFS_STRUCTURE CURRP_NQ_LOCAL;
+    DTFS_STRUCTURE TMPDTFS_LOCAL;
+    DTFS_STRUCTURE TMPDTFS2_LOCAL;
+    DTFS_STRUCTURE TMPDTFS3_LOCAL;
+    DTFS_STRUCTURE CURRP_Q_E_LOCAL;
+    DTFS_STRUCTURE dtfs_temp_LOCAL;
+
+    DTFS_STRUCTURE *CURRP_NQ    = &CURRP_NQ_LOCAL;
+    DTFS_STRUCTURE *TMPDTFS     = &TMPDTFS_LOCAL;
+    DTFS_STRUCTURE *TMPDTFS2    = &TMPDTFS2_LOCAL;
+    DTFS_STRUCTURE *TMPDTFS3    = &TMPDTFS3_LOCAL;
+    DTFS_STRUCTURE *CURRP_Q_E   = &CURRP_Q_E_LOCAL;
+    DTFS_STRUCTURE *dtfs_temp   = &dtfs_temp_LOCAL;
+
+    DTFS_new(CURRP_NQ);
+    DTFS_new(TMPDTFS);
+    DTFS_new(TMPDTFS2);
+    DTFS_new(TMPDTFS3);
+    DTFS_new(CURRP_Q_E);
+    DTFS_new(dtfs_temp);
 
     if ( st->bwidth == WB )
     {
@@ -88,14 +102,6 @@ void ppp_voiced_encoder(
     if ( st->last_ppp_mode == 1 && !st->mode_QQF )
     {
         st->bump_up = 1;
-
-        free(CURRP_NQ);
-        free(TMPDTFS);
-        free(TMPDTFS2);
-        free(TMPDTFS3);
-        free(CURRP_Q_E);
-        free(dtfs_temp);
-
         return;
     }
 
@@ -115,12 +121,6 @@ void ppp_voiced_encoder(
     {
         st->bump_up = 1;
 
-        free(CURRP_NQ);
-        free(TMPDTFS);
-        free(TMPDTFS2);
-        free(TMPDTFS3);
-        free(CURRP_Q_E);
-        free(dtfs_temp);
         return;
     }
 
@@ -142,13 +142,6 @@ void ppp_voiced_encoder(
     if (out_of_bound == 1)
     {
         st->bump_up = 1;
-
-        free(CURRP_NQ);
-        free(TMPDTFS);
-        free(TMPDTFS2);
-        free(TMPDTFS3);
-        free(CURRP_Q_E);
-        free(dtfs_temp);
 
         return;
     }
@@ -285,13 +278,6 @@ void ppp_voiced_encoder(
         {
             st->bump_up = 1;
 
-            free(CURRP_NQ);
-            free(TMPDTFS);
-            free(TMPDTFS2);
-            free(TMPDTFS3);
-            free(CURRP_Q_E);
-            free(dtfs_temp);
-
             return;
         }
     }
@@ -316,13 +302,6 @@ void ppp_voiced_encoder(
         {
             st->bump_up = 1;
 
-            free(CURRP_NQ);
-            free(TMPDTFS);
-            free(TMPDTFS2);
-            free(TMPDTFS3);
-            free(CURRP_Q_E);
-            free(dtfs_temp);
-
             return;
         }
     }
@@ -337,13 +316,6 @@ void ppp_voiced_encoder(
     if ( st->bump_up == 1 )
     {
 
-        free(CURRP_NQ);
-        free(TMPDTFS);
-        free(TMPDTFS2);
-        free(TMPDTFS3);
-        free(CURRP_Q_E);
-        free(dtfs_temp);
-
         return;
     }
 
@@ -351,13 +323,6 @@ void ppp_voiced_encoder(
     if( st->last_coder_type_raw == UNVOICED )
     {
         st->bump_up=1;
-
-        free(CURRP_NQ);
-        free(TMPDTFS);
-        free(TMPDTFS2);
-        free(TMPDTFS3);
-        free(CURRP_Q_E);
-        free(dtfs_temp);
 
         return;
     }
@@ -553,13 +518,6 @@ void ppp_voiced_encoder(
     {
         st->bump_up = 1;
 
-        free(CURRP_NQ);
-        free(TMPDTFS);
-        free(TMPDTFS2);
-        free(TMPDTFS3);
-        free(CURRP_Q_E);
-        free(dtfs_temp);
-
         return;
     }
 
@@ -572,13 +530,6 @@ void ppp_voiced_encoder(
             st->patterncount -= 1000;
             PPP_MODE_E = 'B';
             st->bump_up = 1;
-
-            free(CURRP_NQ);
-            free(TMPDTFS);
-            free(TMPDTFS2);
-            free(TMPDTFS3);
-            free(CURRP_Q_E);
-            free(dtfs_temp);
 
             return;
         }
@@ -605,13 +556,6 @@ void ppp_voiced_encoder(
 
     mvr2r(dtfs_temp->a, st->dtfs_enc_a, MAXLAG_WI);
     mvr2r(dtfs_temp->b, st->dtfs_enc_b, MAXLAG_WI);
-
-    free(CURRP_NQ);
-    free(TMPDTFS);
-    free(TMPDTFS2);
-    free(TMPDTFS3);
-    free(CURRP_Q_E);
-    free(dtfs_temp);
 
     return;
 }

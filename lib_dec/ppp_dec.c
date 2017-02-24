@@ -25,7 +25,9 @@ void ppp_quarter_decoder(
     DTFS_STRUCTURE PREV_CW_D          /* i  : Previous DTFS */
 )
 {
-    DTFS_STRUCTURE *PREVDTFS = DTFS_new();
+    DTFS_STRUCTURE PREVDTFS_LOCAL;
+    DTFS_STRUCTURE *PREVDTFS = &PREVDTFS_LOCAL;
+    DTFS_new(PREVDTFS);
 
     float tmp, temp_pl = (float) prevCW_lag, temp_l = (float) CURRCW_Q_DTFS->lag;
     int l = CURRCW_Q_DTFS->lag;
@@ -69,8 +71,6 @@ void ppp_quarter_decoder(
 
     tmp = (float) get_next_indice( st, 3 );
     DTFS_phaseShift(CURRCW_Q_DTFS,(float)(PI2*(tmp-3)/CURRCW_Q_DTFS->lag)) ;
-
-    free( PREVDTFS );
 
     return;
 }

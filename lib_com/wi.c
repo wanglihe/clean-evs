@@ -38,14 +38,12 @@
 * DTFS structure initialization.
 *-------------------------------------------------------------------*/
 
-DTFS_STRUCTURE* DTFS_new(
-    void
+void DTFS_new(
+    DTFS_STRUCTURE* dtfs
 )
 {
     short i ;
-    DTFS_STRUCTURE* dtfs = NULL;
 
-    dtfs = (DTFS_STRUCTURE *) calloc(1,sizeof(DTFS_STRUCTURE));
     dtfs->lag = 0 ;
     dtfs->nH=0;
     dtfs->nH_4kHz=0;
@@ -55,7 +53,7 @@ DTFS_STRUCTURE* DTFS_new(
     {
         dtfs->a[i]=dtfs->b[i]=0.0 ;
     }
-    return dtfs;     /* o: DTFS structure  */
+    return;
 }
 
 
@@ -645,10 +643,16 @@ void DTFS_transform(
     float nrg_flag = 0;
     float x_r_fx[L_FRAME];
     float temp_w;
+    DTFS_STRUCTURE *tmp1_dtfs, *tmp2_dtfs, *tmp3_dtfs;
+    DTFS_STRUCTURE dtfs1, dtfs2, dtfs3;
 
-    DTFS_STRUCTURE *tmp1_dtfs=DTFS_new();
-    DTFS_STRUCTURE *tmp2_dtfs=DTFS_new();
-    DTFS_STRUCTURE *tmp3_dtfs=DTFS_new();
+    tmp1_dtfs = &dtfs1;
+    tmp2_dtfs = &dtfs2;
+    tmp3_dtfs = &dtfs3;
+
+    DTFS_new(tmp1_dtfs);
+    DTFS_new(tmp2_dtfs);
+    DTFS_new(tmp3_dtfs);
     DTFS_copy (tmp1_dtfs,X);
     DTFS_copy (tmp2_dtfs,X2);
     DTFS_fast_fs_inv (tmp1_dtfs,x1_256,256);
@@ -736,11 +740,6 @@ void DTFS_transform(
         out[i]  = sum1;
     }
 
-
-
-    free(tmp1_dtfs);
-    free(tmp2_dtfs);
-    free(tmp3_dtfs);
 }
 
 
@@ -1981,13 +1980,13 @@ void WIsyn(
     int FR_flag              /* i  : called for post-smoothing in FR                */
 )
 {
-    DTFS_STRUCTURE *CURRCW_DTFS;
+    DTFS_STRUCTURE CURRCW_DTFS_LOCAL;
+    DTFS_STRUCTURE *CURRCW_DTFS = &CURRCW_DTFS_LOCAL;
     unsigned short I=1, flag=0;
-    float alignment, tmp, *phase;
+    float alignment, tmp;
+    float phase[L_FRAME_MAX] = {0.0f};
 
-    phase = (float *) calloc(N,sizeof(float));
-
-    CURRCW_DTFS = DTFS_new();
+    DTFS_new(CURRCW_DTFS);
 
     DTFS_copy (CURRCW_DTFS,*CURR_CW_DTFS);
 
@@ -2032,9 +2031,6 @@ void WIsyn(
         tmp *= I ;
     }
     *ph_offset = (float) fmod ((double)(tmp), PI2) ;
-
-    free(phase) ;
-    free(CURRCW_DTFS);
 }
 
 

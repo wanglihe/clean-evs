@@ -28,7 +28,8 @@ short ppp_quarter_encoder(
     DTFS_STRUCTURE PREV_CW_E                   /* i  : past DTFS */
 )
 {
-    DTFS_STRUCTURE *PREVDTFS;
+    DTFS_STRUCTURE PREVDTFS_LOCAL;
+    DTFS_STRUCTURE *PREVDTFS = &PREVDTFS_LOCAL;
 
     float tmp, temp_pl, temp_l;
     int l;
@@ -37,7 +38,7 @@ short ppp_quarter_encoder(
     int AMP_IDX[2];   /* Codebook index for the Amplitude quantization for PPP */
     float Erot = 0.0, z = 0.0;
 
-    PREVDTFS = DTFS_new();
+    DTFS_new(PREVDTFS);
 
     DTFS_copy( CURRCW_Q, vCURRCW_NQ );
     DTFS_copy( PREVDTFS, PREV_CW_E );
@@ -82,8 +83,6 @@ short ppp_quarter_encoder(
     DTFS_phaseShift( CURRCW_Q,(float)(PI2*tmp/CURRCW_Q->lag) );
 
     push_indice( st, IND_GLOBAL_ALIGNMENT, (short) (tmp+3), 3 );
-
-    free( PREVDTFS );
 
     return returnFlag;
 }
